@@ -1,6 +1,6 @@
 ﻿using ECommerceOrderManagement.Domain.Common;
 
-namespace ECommerceOrderManagement.Domain.Entities;
+namespace ECommerceOrderManagement.Domain.Catalog;
 
 public sealed class Category : SoftDeletableAggregateRoot
 {

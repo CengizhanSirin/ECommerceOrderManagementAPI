@@ -1,7 +1,7 @@
 ﻿using ECommerceOrderManagement.Domain.Common;
 using ECommerceOrderManagement.Domain.ValueObjects;
 
-namespace ECommerceOrderManagement.Domain.Entities
+namespace ECommerceOrderManagement.Domain.Catalog
 {
     public sealed class Product : SoftDeletableAggregateRoot
     {
