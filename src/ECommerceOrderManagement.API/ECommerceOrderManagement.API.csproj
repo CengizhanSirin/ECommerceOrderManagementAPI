@@ -1,24 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-	  <PackageReference Include="Microsoft.OpenApi" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="Microsoft.OpenApi" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>
+				runtime; build; native; contentfiles; analyzers; buildtransitive
+			</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Controllers\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ECommerceOrderManagement.Application\ECommerceOrderManagement.Application.csproj" />
-    <ProjectReference Include="..\ECommerceOrderManagement.Infrastructure\ECommerceOrderManagement.Infrastructure.csproj" />
-    <ProjectReference Include="..\ECommerceOrderManagement.Persistence\ECommerceOrderManagement.Persistence.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ECommerceOrderManagement.Application\ECommerceOrderManagement.Application.csproj" />
+		<ProjectReference Include="..\ECommerceOrderManagement.Infrastructure\ECommerceOrderManagement.Infrastructure.csproj" />
+		<ProjectReference Include="..\ECommerceOrderManagement.Persistence\ECommerceOrderManagement.Persistence.csproj" />
+	</ItemGroup>
 
 </Project>
