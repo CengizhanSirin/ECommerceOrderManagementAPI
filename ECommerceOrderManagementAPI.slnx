@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/API/">
     <Project Path="src/ECommerceOrderManagement.API/ECommerceOrderManagement.API.csproj" />
