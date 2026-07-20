@@ -1,4 +1,5 @@
 ﻿using ECommerceOrderManagement.Persistence.Contexts;
+using ECommerceOrderManagement.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,10 +12,17 @@ public static class PersistenceServiceCollectionExtensions
     {
         var connectionString = configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
 
-        services.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseSqlServer(connectionString);
-        });
+        services.AddSingleton<TimeProvider>(TimeProvider.System);
+
+        services.AddScoped<AuditAndSoftDeleteInterceptor>();
+
+        services.AddDbContext<ApplicationDbContext>((serviceProvider, options)
+            =>
+            {
+                var interceptor = serviceProvider.GetRequiredService<AuditAndSoftDeleteInterceptor>();
+
+                options.UseSqlServer(connectionString).AddInterceptors(interceptor);
+            });
 
         return services;
     }
