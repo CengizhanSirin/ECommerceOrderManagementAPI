@@ -18,10 +18,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Controllers\" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\ECommerceOrderManagement.Application\ECommerceOrderManagement.Application.csproj" />
 		<ProjectReference Include="..\ECommerceOrderManagement.Infrastructure\ECommerceOrderManagement.Infrastructure.csproj" />
 		<ProjectReference Include="..\ECommerceOrderManagement.Persistence\ECommerceOrderManagement.Persistence.csproj" />
