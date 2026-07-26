@@ -4,3 +4,15 @@ GET {{ECommerceOrderManagement.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+@host = http://localhost:5065
+
+
+### Get Product - Success
+GET {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Get Product - Not Found
+GET {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d45
+
+### Get Product - Validation Error
+GET {{host}}/api/products/00000000-0000-0000-0000-000000000000

@@ -5,6 +5,7 @@ using ECommerceOrderManagement.Application.Features.Catalog.Products;
 using ECommerceOrderManagement.Persistence.Contexts;
 using ECommerceOrderManagement.Persistence.Interceptors;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog;
+using ECommerceOrderManagement.Persistence.Repositories.Catalog.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IBrandRepository, BrandRepository>();
+        services.AddScoped<IProductQueries, ProductQueries>();
 
         services.AddScoped<IUnitOfWork, ECommerceOrderManagement.Persistence.UnitOfWork.UnitOfWork>();
 

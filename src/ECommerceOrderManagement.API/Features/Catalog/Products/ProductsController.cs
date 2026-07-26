@@ -1,6 +1,7 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Catalog.Products.CreateProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.CreateProduct;
+using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProductById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,5 +34,18 @@ public sealed class ProductsController : BaseApiController
                 Id = productId
             },
             response => $"/api/products/{response.Id}");
+    }
+
+    [HttpGet("{productId:guid}")]
+    [ProducesResponseType<GetProductByIdResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetProductById(Guid productId, CancellationToken cancellationToken)
+    {
+        var query = new GetProductByIdQuery(productId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 }
