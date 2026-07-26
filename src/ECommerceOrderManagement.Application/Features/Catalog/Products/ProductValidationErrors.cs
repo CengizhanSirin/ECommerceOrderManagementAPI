@@ -2,6 +2,8 @@
 
 public static class ProductValidationErrors
 {
+    public const string IdRequiredCode = "Product.Id.Required";
+    public const string IdRequiredMessage = "Product ID is required.";
     public const string NameRequiredCode = "Product.Name.Required";
     public const string NameRequiredMessage = "Product name is required.";
     public const string NameMaxLengthCode = "Product.Name.MaxLength";
@@ -27,5 +29,5 @@ public static class ProductValidationErrors
     public const string DescriptionMaxLengthCode = "Product.Description.MaxLength";
     public const string DescriptionMaxLengthMessage = "Product description must not exceed 4000 characters.";
     public const string MainImageUrlMaxLengthCode = "Product.MainImageUrl.MaxLength";
-    public const string MainImageUrlMaxLengthMessage = "Product main image URL must not exceed 2048 characters.";
+    public const string MainImageUrlMaxLengthMessage = "Product main image URL must not exceed 2048 characters."; 
 }

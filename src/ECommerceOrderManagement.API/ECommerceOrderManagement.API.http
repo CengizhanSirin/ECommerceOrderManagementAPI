@@ -16,3 +16,119 @@ GET {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d45
 
 ### Get Product - Validation Error
 GET {{host}}/api/products/00000000-0000-0000-0000-000000000000
+
+
+### Update Product - Success
+PUT {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+Content-Type: application/json
+{
+  "name": "Gaming Laptop Pro",
+  "slug": "gaming-laptop-pro",
+  "sku": "LAPTOP-001",
+  "priceAmount": 52999.90,
+  "currency": "TRY",
+  "categoryId": "00B2DD31-9291-4EA9-A365-4FEFB41F35E8",
+  "brandId": null,
+  "description": "Updated high performance gaming laptop.",
+  "mainImageUrl": null
+}
+
+
+### Get Updated Product
+GET {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Update Product - Not Found
+PUT {{host}}/api/products/11111111-1111-1111-1111-111111111111
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop Pro",
+  "slug": "gaming-laptop-pro",
+  "sku": "LAPTOP-001",
+  "priceAmount": 52999.90,
+  "currency": "TRY",
+  "categoryId": "00B2DD31-9291-4EA9-A365-4FEFB41F35E8",
+  "brandId": null,
+  "description": "Updated high performance gaming laptop.",
+  "mainImageUrl": null
+}
+
+### Update Product - Validation Error
+PUT {{host}}/api/products/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "name": "",
+  "slug": "",
+  "sku": "",
+  "priceAmount": -1,
+  "currency": "",
+  "categoryId": "00000000-0000-0000-0000-000000000000",
+  "brandId": null,
+  "description": null,
+  "mainImageUrl": null
+}
+ 
+### Update Product - SKU Conflict
+PUT {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop Pro",
+  "slug": "gaming-laptop-pro-new",
+  "sku": "BAŞKA-ÜRÜNÜN-SKU-DEĞERİ",
+  "priceAmount": 52999.90,
+  "currency": "TRY",
+  "categoryId": "00B2DD31-9291-4EA9-A365-4FEFB41F35E8",
+  "brandId": null,
+  "description": "Updated high performance gaming laptop.",
+  "mainImageUrl": null
+}
+
+### Create Second Product For Conflict Tests
+POST {{host}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Office Laptop",
+  "slug": "office-laptop",
+  "sku": "LAPTOP-002",
+  "priceAmount": 32999.90,
+  "currency": "TRY",
+  "categoryId": "00B2DD31-9291-4EA9-A365-4FEFB41F35E8",
+  "brandId": null,
+  "description": "Laptop created for update conflict tests.",
+  "mainImageUrl": null
+}
+
+### Update Product - SKU Conflict
+PUT {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop Pro",
+  "slug": "gaming-laptop-pro-new",
+  "sku": "LAPTOP-002",
+  "priceAmount": 52999.90,
+  "currency": "TRY",
+  "categoryId": "00B2DD31-9291-4EA9-A365-4FEFB41F35E8",
+  "brandId": null,
+  "description": "Updated high performance gaming laptop.",
+  "mainImageUrl": null
+}
+
+### Update Product - Slug Conflict
+PUT {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop Pro",
+  "slug": "office-laptop",
+  "sku": "LAPTOP-001",
+  "priceAmount": 52999.90,
+  "currency": "TRY",
+  "categoryId": "00B2DD31-9291-4EA9-A365-4FEFB41F35E8",
+  "brandId": null,
+  "description": "Updated high performance gaming laptop.",
+  "mainImageUrl": null
+}

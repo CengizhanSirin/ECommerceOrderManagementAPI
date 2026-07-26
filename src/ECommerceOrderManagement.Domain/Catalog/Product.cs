@@ -68,6 +68,42 @@ namespace ECommerceOrderManagement.Domain.Catalog
                 brandId);
         }
 
+        public void Update(string name, string slug, string sku, Money price, Guid categoryId, Guid? brandId, string? description, string? mainImageUrl)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            ArgumentException.ThrowIfNullOrWhiteSpace(slug);
+            ArgumentException.ThrowIfNullOrWhiteSpace(sku);
+            ArgumentNullException.ThrowIfNull(price);
+
+            if (categoryId == Guid.Empty)
+            {
+                throw new ArgumentException("Category ID cannot be empty.", nameof(categoryId));
+            }
+
+            if (brandId.HasValue && brandId.Value == Guid.Empty)
+            {
+                throw new ArgumentException("Brand ID cannot be empty.", nameof(brandId));
+            }
+
+            Name = name.Trim();
+
+            Slug = slug.Trim().ToLowerInvariant();
+
+            Sku = sku.Trim().ToUpperInvariant();
+
+            Price = price;
+            CategoryId = categoryId;
+            BrandId = brandId;
+
+            Description = string.IsNullOrWhiteSpace(description)
+                ? null
+                : description.Trim();
+
+            MainImageUrl = string.IsNullOrWhiteSpace(mainImageUrl)
+                ? null
+                : mainImageUrl.Trim();
+        }
+
         public void UpdateDetails(string name, string slug, string sku, string? description, string? mainImageUrl)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
