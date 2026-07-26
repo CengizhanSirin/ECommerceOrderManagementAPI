@@ -1,7 +1,9 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Catalog.Products.CreateProduct;
+using ECommerceOrderManagement.API.Features.Catalog.Products.UpdateProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.CreateProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProductById;
+using ECommerceOrderManagement.Application.Features.Catalog.Products.UpdateProduct;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,5 +49,28 @@ public sealed class ProductsController : BaseApiController
         var result = await _sender.Send(query, cancellationToken);
 
         return HandleResult(result);
+    }
+
+    [HttpPut("{productId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> UpdateProduct(Guid productId, [FromBody] UpdateProductRequest request, CancellationToken cancellationToken)
+    {
+        var command = new UpdateProductCommand(productId,
+            request.Name,
+            request.Slug,
+            request.Sku,
+            request.PriceAmount,
+            request.Currency,
+            request.CategoryId,
+            request.BrandId,
+            request.Description,
+            request.MainImageUrl);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
     }
 }
