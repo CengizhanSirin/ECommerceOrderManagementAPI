@@ -2,6 +2,7 @@
 using ECommerceOrderManagement.API.Features.Catalog.Products.CreateProduct;
 using ECommerceOrderManagement.API.Features.Catalog.Products.UpdateProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.CreateProduct;
+using ECommerceOrderManagement.Application.Features.Catalog.Products.DeleteProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProductById;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.UpdateProduct;
 using MediatR;
@@ -68,6 +69,19 @@ public sealed class ProductsController : BaseApiController
             request.BrandId,
             request.Description,
             request.MainImageUrl);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+    [HttpDelete("{productId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteProduct(Guid productId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteProductCommand(productId);
 
         var result = await _sender.Send(command, cancellationToken);
 
