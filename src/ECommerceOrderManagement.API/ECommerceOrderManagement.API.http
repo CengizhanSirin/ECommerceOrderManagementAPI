@@ -7,6 +7,22 @@ Accept: application/json
 
 @host = http://localhost:5065
 
+### Create Product - Office Laptop Basic
+POST {{host}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Office Laptop Basic",
+  "slug": "office-laptop-basic",
+  "sku": "LAPTOP-002",
+  "description": "Günlük ofis kullanımı için temel dizüstü bilgisayar.",
+  "priceAmount": 18999.90,
+  "currency": "TRY",
+  "categoryId": "00b2dd31-9291-4ea9-a365-4fefb41f35e8",
+  "brandId": null,
+  "isActive": true,
+  "mainImageUrl": null
+}
 
 ### Get Product - Success
 GET {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
@@ -144,3 +160,41 @@ DELETE {{host}}/api/products/11111111-1111-1111-1111-111111111111
 
 ### Delete Product - Validation Error
 DELETE {{host}}/api/products/00000000-0000-0000-0000-000000000000
+
+
+
+### Get Products - Default Pagination
+GET {{host}}/api/products
+
+### Get Products - Search
+GET {{host}}/api/products?searchTerm=gaming
+
+### Get Products - Search No Results
+GET {{host}}/api/products?searchTerm=phone
+
+### Get Products - Invalid Page Size
+GET {{host}}/api/products?pageSize=101
+
+### Get Products - Invalid Page Number
+GET {{host}}/api/products?pageNumber=0
+
+### Get Products - Filter By Category
+GET {{host}}/api/products?categoryId=00b2dd31-9291-4ea9-a365-4fefb41f35e8
+
+### Get Products - Category Has No Products
+GET {{host}}/api/products?categoryId=11111111-1111-1111-1111-111111111111
+
+### Get Products - Active Products
+GET {{host}}/api/products?isActive=true
+
+### Get Products - Inactive Products
+GET {{host}}/api/products?isActive=false
+
+### Get Products - Sort By Price Ascending
+GET {{host}}/api/products?sortBy=Price&sortDirection=Ascending
+
+### Get Products - Pagination Page 1
+GET {{host}}/api/products?pageNumber=1&pageSize=1&sortBy=Price&sortDirection=Ascending
+
+### Get Products - Pagination Page 2
+GET {{host}}/api/products?pageNumber=2&pageSize=1&sortBy=Price&sortDirection=Ascending

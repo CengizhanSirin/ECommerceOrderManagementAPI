@@ -29,5 +29,15 @@ public static class ProductValidationErrors
     public const string DescriptionMaxLengthCode = "Product.Description.MaxLength";
     public const string DescriptionMaxLengthMessage = "Product description must not exceed 4000 characters.";
     public const string MainImageUrlMaxLengthCode = "Product.MainImageUrl.MaxLength";
-    public const string MainImageUrlMaxLengthMessage = "Product main image URL must not exceed 2048 characters."; 
+    public const string MainImageUrlMaxLengthMessage = "Product main image URL must not exceed 2048 characters.";
+    public const string ProductsPageNumberInvalidCode = "Products.PageNumber.Invalid";
+    public const string ProductsPageNumberInvalidMessage = "Page number must be greater than zero.";
+    public const string ProductsSortFieldInvalidCode = "Products.SortField.Invalid";
+    public const string ProductsSortFieldInvalidMessage = "The selected product sort field is invalid.";
+    public const string ProductsSortDirectionInvalidCode = "Products.SortDirection.Invalid";
+    public const string ProductsSortDirectionInvalidMessage = "The selected sort direction is invalid.";
+    public const string ProductsCategoryInvalidCode = "Products.Category.Invalid";
+    public const string ProductsCategoryInvalidMessage = "Category ID cannot be empty.";
+    public const string ProductsPageSizeInvalidCode = "Products.PageSize.Invalid";
+    public const string ProductsSearchTermMaxLengthCode = "Products.SearchTerm.MaxLength";
 }

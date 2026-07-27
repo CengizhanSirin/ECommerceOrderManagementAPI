@@ -1,9 +1,12 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Catalog.Products.CreateProduct;
+using ECommerceOrderManagement.API.Features.Catalog.Products.GetProducts;
 using ECommerceOrderManagement.API.Features.Catalog.Products.UpdateProduct;
+using ECommerceOrderManagement.Application.Common.Pagination;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.CreateProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.DeleteProduct;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProductById;
+using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProducts;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.UpdateProduct;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -86,5 +89,25 @@ public sealed class ProductsController : BaseApiController
         var result = await _sender.Send(command, cancellationToken);
 
         return HandleNoContent(result);
+    }
+
+    [HttpGet]
+    [ProducesResponseType<PagedResult<GetProductsItemResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetProducts([FromQuery] GetProductsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetProductsQuery(
+            request.PageNumber,
+            request.PageSize,
+            request.SearchTerm,
+            request.CategoryId,
+            request.BrandId,
+            request.IsActive,
+            request.SortBy,
+            request.SortDirection);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 }
