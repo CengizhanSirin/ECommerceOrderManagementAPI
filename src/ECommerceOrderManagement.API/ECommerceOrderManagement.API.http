@@ -132,3 +132,15 @@ Content-Type: application/json
   "description": "Updated high performance gaming laptop.",
   "mainImageUrl": null
 }
+
+### Delete Product - Success
+DELETE {{host}}/api/products/069a7cb1-87e7-4b35-85ef-a18c6080f77e
+
+### Get Deleted Product
+GET {{host}}/api/products/069a7cb1-87e7-4b35-85ef-a18c6080f77e
+
+### Delete Product - Not Found
+DELETE {{host}}/api/products/11111111-1111-1111-1111-111111111111
+
+### Delete Product - Validation Error
+DELETE {{host}}/api/products/00000000-0000-0000-0000-000000000000
