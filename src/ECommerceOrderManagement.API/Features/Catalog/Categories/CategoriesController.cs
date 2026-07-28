@@ -1,6 +1,7 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Catalog.Categories.CreateCategory;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.CreateCategory;
+using ECommerceOrderManagement.Application.Features.Catalog.Categories.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,5 +26,18 @@ public sealed class CategoriesController(ISender sender) : BaseApiController
         var result = await sender.Send(command, cancellationToken);
 
         return HandleCreatedResult(result, response => response, response => $"/api/categories/{response.Id}");
+    }
+
+    [HttpGet("{categoryId:guid}")]
+    [ProducesResponseType<GetCategoryByIdResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCategoryById([FromRoute] Guid categoryId, CancellationToken cancellationToken)
+    {
+        var query = new GetCategoryByIdQuery(categoryId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 }

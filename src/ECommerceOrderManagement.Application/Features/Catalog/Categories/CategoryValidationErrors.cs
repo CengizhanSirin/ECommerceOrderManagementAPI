@@ -16,4 +16,6 @@ internal static class CategoryValidationErrors
     public const string ImageUrlInvalidMessage = "Image URL must be a valid HTTP or HTTPS URL.";
     public const string DisplayOrderInvalidCode = "Categories.DisplayOrder.Invalid";
     public const string DisplayOrderInvalidMessage = "Display order cannot be negative.";
+    public const string IdRequiredCode = "Categories.Id.Required";
+    public const string IdRequiredMessage = "Category ID is required.";
 }
