@@ -415,3 +415,17 @@ GET {{host}}/api/categories/11111111-1111-1111-1111-111111111111
 
 ### Get Category By Id - Empty Category Id
 GET {{host}}/api/categories/00000000-0000-0000-0000-000000000000
+
+
+
+### Get Categories - Success
+GET {{host}}/api/categories
+
+### Get Categories - Search
+GET {{host}}/api/categories?searchTerm=home
+
+### Get Categories - Inactive Categories
+GET {{host}}/api/categories?isActive=false
+
+### Get Categories - Search Term Too Long
+GET {{host}}/api/categories?searchTerm=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

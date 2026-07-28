@@ -18,4 +18,5 @@ internal static class CategoryValidationErrors
     public const string DisplayOrderInvalidMessage = "Display order cannot be negative.";
     public const string IdRequiredCode = "Categories.Id.Required";
     public const string IdRequiredMessage = "Category ID is required.";
+    public const string CategoriesSearchTermMaxLengthCode = "Categories.SearchTerm.MaxLength";
 }

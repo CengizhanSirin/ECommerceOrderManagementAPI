@@ -1,6 +1,8 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Catalog.Categories.CreateCategory;
+using ECommerceOrderManagement.API.Features.Catalog.Categories.GetCategories;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.CreateCategory;
+using ECommerceOrderManagement.Application.Features.Catalog.Categories.GetCategories;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +30,8 @@ public sealed class CategoriesController(ISender sender) : BaseApiController
         return HandleCreatedResult(result, response => response, response => $"/api/categories/{response.Id}");
     }
 
+
+
     [HttpGet("{categoryId:guid}")]
     [ProducesResponseType<GetCategoryByIdResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -38,6 +42,18 @@ public sealed class CategoriesController(ISender sender) : BaseApiController
 
         var result = await sender.Send(query, cancellationToken);
 
+        return HandleResult(result);
+    }
+
+
+
+    [HttpGet]
+    [ProducesResponseType<IReadOnlyCollection<GetCategoriesItemResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetCategories([FromQuery] GetCategoriesRequest request, CancellationToken cancellationToken)
+    { 
+       var query = new GetCategoriesQuery(request.SearchTerm, request.IsActive);
+        var result = await sender.Send(query, cancellationToken);
         return HandleResult(result);
     }
 }
