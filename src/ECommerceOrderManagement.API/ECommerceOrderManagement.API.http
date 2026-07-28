@@ -198,3 +198,209 @@ GET {{host}}/api/products?pageNumber=1&pageSize=1&sortBy=Price&sortDirection=Asc
 
 ### Get Products - Pagination Page 2
 GET {{host}}/api/products?pageNumber=2&pageSize=1&sortBy=Price&sortDirection=Ascending
+
+
+
+
+### Create Category - Success
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Home Appliances",
+  "slug": "home-appliances",
+  "description": "Appliances and equipment for home use.",
+  "imageUrl": "https://example.com/images/home-appliances.jpg",
+  "displayOrder": 10
+}
+
+### Create Category - Minimal Request
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Books",
+  "slug": "books"
+}
+
+### Create Category - Uppercase Slug
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Audio Equipment",
+  "slug": "AUDIO-EQUIPMENT",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 20
+}
+
+### Create Category - Duplicate Name
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Home Appliances",
+  "slug": "different-home-appliances",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 11
+}
+
+### Create Category - Duplicate Slug
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Household Equipment",
+  "slug": "home-appliances",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 12
+}
+
+### Create Category - Duplicate Slug With Different Case
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Kitchen Products",
+  "slug": "HOME-APPLIANCES",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 13
+}
+
+### Create Category - Empty Name
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "",
+  "slug": "empty-name-test",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Whitespace Name
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "   ",
+  "slug": "whitespace-name-test",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Empty Slug
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Empty Slug Test",
+  "slug": "",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Slug Contains Spaces
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Slug Spaces",
+  "slug": "invalid slug",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Slug Contains Underscore
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Slug Underscore",
+  "slug": "invalid_slug",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Slug Contains Consecutive Hyphens
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Consecutive Hyphens",
+  "slug": "invalid--slug",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Negative Display Order
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Negative Display Order",
+  "slug": "negative-display-order",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": -1
+}
+
+### Create Category - Invalid Image URL
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Image URL",
+  "slug": "invalid-image-url",
+  "description": null,
+  "imageUrl": "not-a-valid-url",
+  "displayOrder": 0
+}
+
+### Create Category - Unsupported Image URL Scheme
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "FTP Image URL",
+  "slug": "ftp-image-url",
+  "description": null,
+  "imageUrl": "ftp://example.com/image.jpg",
+  "displayOrder": 0
+}
+
+### Create Category - Whitespace Optional Values
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Garden Equipment",
+  "slug": "garden-equipment",
+  "description": "   ",
+  "imageUrl": "   ",
+  "displayOrder": 30
+}
+
+### Create Category - Empty JSON Object
+POST {{host}}/api/categories
+Content-Type: application/json
+{}
+
+### Create Category - Malformed JSON
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Malformed JSON",
+  "slug": "malformed-json",
+}

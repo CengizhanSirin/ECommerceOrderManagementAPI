@@ -13,4 +13,14 @@ public static class CategoryErrors
     {
         return Error.Failure("Category.Inactive", $"Category with ID '{categoryId}' is inactive.");
     }
+
+    public static Error NameAlreadyExists(string name)
+    {
+        return Error.Conflict("Category.NameAlreadyExists", $"A category with the name '{name}' already exists.");
+    }
+
+    public static Error SlugAlreadyExists(string slug)
+    {
+        return Error.Conflict("Category.SlugAlreadyExists", $"A category with the slug '{slug}' already exists.");
+    }
 }
