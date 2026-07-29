@@ -429,3 +429,73 @@ GET {{host}}/api/categories?isActive=false
 
 ### Get Categories - Search Term Too Long
 GET {{host}}/api/categories?searchTerm=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+
+### Update Category 
+@updateCategoryId = 879e68b3-f2d9-4bd4-a654-2ebef0c108c8
+@computersCategoryId = 00b2dd31-9291-4ea9-a365-4fefb41f35e8
+
+### Update Category - Success
+PUT {{host}}/api/categories/{{updateCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Home and Living",
+  "slug": "HOME-AND-LIVING",
+  "description": "Products and equipment for living spaces.",
+  "imageUrl": "https://example.com/images/home-and-living.jpg",
+  "displayOrder": 4
+}
+
+### Get Updated Category
+GET {{host}}/api/categories/{{updateCategoryId}}
+
+
+### Update Category - Not Found
+PUT {{host}}/api/categories/11111111-1111-1111-1111-111111111111
+Content-Type: application/json
+
+{
+  "name": "Unknown Category",
+  "slug": "unknown-category",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Update Category - Duplicate Name
+PUT {{host}}/api/categories/{{updateCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Computers",
+  "slug": "home-and-living-alternative",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 4
+}
+
+### Update Category - Duplicate Slug
+PUT {{host}}/api/categories/{{computersCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Computers Updated Attempt",
+  "slug": "home-and-living",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 1
+}
+
+### Update Category - Invalid Display Order
+PUT {{host}}/api/categories/{{updateCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Home and Living",
+  "slug": "home-and-living",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": -1
+}
