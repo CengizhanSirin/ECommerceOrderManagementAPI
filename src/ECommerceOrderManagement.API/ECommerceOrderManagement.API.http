@@ -586,3 +586,17 @@ GET {{host}}/api/brands/11111111-1111-1111-1111-111111111111
 
 ### Get Brand By Id - Empty Id
 GET {{host}}/api/brands/00000000-0000-0000-0000-000000000000
+
+
+
+### Get Brands - Success
+GET {{host}}/api/brands
+
+### Get Brands - Search
+GET {{host}}/api/brands?searchTerm=nova
+
+### Get Brands - Inactive Brands
+GET {{host}}/api/brands?isActive=false
+
+### Get Brands - Search Term Too Long
+GET {{host}}/api/brands?searchTerm=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

@@ -1,7 +1,9 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Catalog.Brands.CreateBrand;
+using ECommerceOrderManagement.API.Features.Catalog.Brands.GetBrands;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands.CreateBrand;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands.GetBrandById;
+using ECommerceOrderManagement.Application.Features.Catalog.Brands.GetBrands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +33,20 @@ public sealed class BrandsController(ISender sender) : BaseApiController
     public async Task<IActionResult> GetBrandById([FromRoute] Guid brandId, CancellationToken cancellationToken)
     {
         var query = new GetBrandByIdQuery(brandId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
+    }
+
+
+
+    [HttpGet]
+    [ProducesResponseType<IReadOnlyCollection<GetBrandsItemResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetBrands([FromQuery] GetBrandsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetBrandsQuery(request.SearchTerm, request.IsActive);
 
         var result = await sender.Send(query, cancellationToken);
 
