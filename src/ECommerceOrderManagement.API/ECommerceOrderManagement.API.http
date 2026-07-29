@@ -663,3 +663,37 @@ Content-Type: application/json
   "description": null,
   "logoUrl": "ftp://example.com/logo.png"
 }
+
+### Delete Brand
+@brandWithProductsId = a186f488-5593-4fbc-8187-4ba76af30c22
+@deletableBrandId = 5ca0df38-01d3-49fc-9c54-2cac88412c8e
+@productId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+
+### Assign Brand To Product
+PUT {{host}}/api/products/{{productId}}
+Content-Type: application/json
+
+{
+  "name": "Office Laptop Basic",
+  "slug": "office-laptop-basic",
+  "sku": "LAPTOP-002",
+  "description": "Günlük ofis kullanımı için temel dizüstü bilgisayar.",
+  "priceAmount": 18999.90,
+  "currency": "TRY",
+  "categoryId": "00b2dd31-9291-4ea9-a365-4fefb41f35e8",
+  "brandId": "{{brandWithProductsId}}",
+  "isActive": true,
+  "mainImageUrl": null
+}
+
+### Delete Brand - Has Products
+DELETE {{host}}/api/brands/{{brandWithProductsId}}
+
+### Delete Brand - Success
+DELETE {{host}}/api/brands/{{deletableBrandId}}
+
+### Get Deleted Brand - Not Found
+GET {{host}}/api/brands/{{deletableBrandId}}
+
+### Delete Brand - Already Deleted
+DELETE {{host}}/api/brands/{{deletableBrandId}}

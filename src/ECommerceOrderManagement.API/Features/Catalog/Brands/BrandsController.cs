@@ -3,6 +3,7 @@ using ECommerceOrderManagement.API.Features.Catalog.Brands.CreateBrand;
 using ECommerceOrderManagement.API.Features.Catalog.Brands.GetBrands;
 using ECommerceOrderManagement.API.Features.Catalog.Brands.UpdateBrand;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands.CreateBrand;
+using ECommerceOrderManagement.Application.Features.Catalog.Brands.DeleteBrand;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands.GetBrandById;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands.GetBrands;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands.UpdateBrand;
@@ -77,5 +78,17 @@ public sealed class BrandsController(ISender sender) : BaseApiController
     }
 
 
+    [HttpDelete("{brandId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> DeleteBrand([FromRoute] Guid brandId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteBrandCommand(brandId);
 
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
 }
