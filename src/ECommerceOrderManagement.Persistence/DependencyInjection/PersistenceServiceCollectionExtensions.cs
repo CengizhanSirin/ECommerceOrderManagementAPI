@@ -27,6 +27,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IBrandRepository, BrandRepository>();
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();
+        services.AddScoped<IBrandQueries, BrandQueries>();
 
         services.AddScoped<IUnitOfWork, ECommerceOrderManagement.Persistence.UnitOfWork.UnitOfWork>();
 

@@ -10,4 +10,6 @@ public interface IProductRepository : IRepository<Product>
     Task<bool> ExistsBySlugAsync(string slug, Guid? excludedProductId = null, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default);
+
+    Task<bool> ExistsByBrandIdAsync(Guid brandId, CancellationToken cancellationToken = default);
 }
