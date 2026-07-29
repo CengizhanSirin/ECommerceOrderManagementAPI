@@ -7,6 +7,11 @@ namespace ECommerceOrderManagement.Persistence.Repositories.Catalog;
 
 internal sealed class ProductRepository(ApplicationDbContext dbContext) : Repository<Product>(dbContext), IProductRepository
 {
+    public Task<bool> ExistsByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default)
+    {
+        return DbSet.AnyAsync(product => product.CategoryId == categoryId, cancellationToken);
+    }
+
     public Task<bool> ExistsBySkuAsync(string sku, Guid? excludedProductId = null, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sku);

@@ -198,3 +198,322 @@ GET {{host}}/api/products?pageNumber=1&pageSize=1&sortBy=Price&sortDirection=Asc
 
 ### Get Products - Pagination Page 2
 GET {{host}}/api/products?pageNumber=2&pageSize=1&sortBy=Price&sortDirection=Ascending
+
+
+
+
+### Create Category - Success
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Home Appliances",
+  "slug": "home-appliances",
+  "description": "Appliances and equipment for home use.",
+  "imageUrl": "https://example.com/images/home-appliances.jpg",
+  "displayOrder": 10
+}
+
+### Create Category - Minimal Request
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Books",
+  "slug": "books"
+}
+
+### Create Category - Uppercase Slug
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Audio Equipment",
+  "slug": "AUDIO-EQUIPMENT",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 20
+}
+
+### Create Category - Duplicate Name
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Home Appliances",
+  "slug": "different-home-appliances",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 11
+}
+
+### Create Category - Duplicate Slug
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Household Equipment",
+  "slug": "home-appliances",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 12
+}
+
+### Create Category - Duplicate Slug With Different Case
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Kitchen Products",
+  "slug": "HOME-APPLIANCES",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 13
+}
+
+### Create Category - Empty Name
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "",
+  "slug": "empty-name-test",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Whitespace Name
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "   ",
+  "slug": "whitespace-name-test",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Empty Slug
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Empty Slug Test",
+  "slug": "",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Slug Contains Spaces
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Slug Spaces",
+  "slug": "invalid slug",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Slug Contains Underscore
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Slug Underscore",
+  "slug": "invalid_slug",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Slug Contains Consecutive Hyphens
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Consecutive Hyphens",
+  "slug": "invalid--slug",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Create Category - Negative Display Order
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Negative Display Order",
+  "slug": "negative-display-order",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": -1
+}
+
+### Create Category - Invalid Image URL
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Invalid Image URL",
+  "slug": "invalid-image-url",
+  "description": null,
+  "imageUrl": "not-a-valid-url",
+  "displayOrder": 0
+}
+
+### Create Category - Unsupported Image URL Scheme
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "FTP Image URL",
+  "slug": "ftp-image-url",
+  "description": null,
+  "imageUrl": "ftp://example.com/image.jpg",
+  "displayOrder": 0
+}
+
+### Create Category - Whitespace Optional Values
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Garden Equipment",
+  "slug": "garden-equipment",
+  "description": "   ",
+  "imageUrl": "   ",
+  "displayOrder": 30
+}
+
+### Create Category - Empty JSON Object
+POST {{host}}/api/categories
+Content-Type: application/json
+{}
+
+### Create Category - Malformed JSON
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Malformed JSON",
+  "slug": "malformed-json",
+}
+
+
+
+### Get Category By Id - Success
+GET {{host}}/api/categories/0239bc2e-7244-4393-9ca2-a56ff751cb98
+
+### Get Category By Id - Not Found
+GET {{host}}/api/categories/11111111-1111-1111-1111-111111111111
+
+### Get Category By Id - Empty Category Id
+GET {{host}}/api/categories/00000000-0000-0000-0000-000000000000
+
+
+
+### Get Categories - Success
+GET {{host}}/api/categories
+
+### Get Categories - Search
+GET {{host}}/api/categories?searchTerm=home
+
+### Get Categories - Inactive Categories
+GET {{host}}/api/categories?isActive=false
+
+### Get Categories - Search Term Too Long
+GET {{host}}/api/categories?searchTerm=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+
+### Update Category 
+@updateCategoryId = 879e68b3-f2d9-4bd4-a654-2ebef0c108c8
+@computersCategoryId = 00b2dd31-9291-4ea9-a365-4fefb41f35e8
+
+### Update Category - Success
+PUT {{host}}/api/categories/{{updateCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Home and Living",
+  "slug": "HOME-AND-LIVING",
+  "description": "Products and equipment for living spaces.",
+  "imageUrl": "https://example.com/images/home-and-living.jpg",
+  "displayOrder": 4
+}
+
+### Get Updated Category
+GET {{host}}/api/categories/{{updateCategoryId}}
+
+
+### Update Category - Not Found
+PUT {{host}}/api/categories/11111111-1111-1111-1111-111111111111
+Content-Type: application/json
+
+{
+  "name": "Unknown Category",
+  "slug": "unknown-category",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 0
+}
+
+### Update Category - Duplicate Name
+PUT {{host}}/api/categories/{{updateCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Computers",
+  "slug": "home-and-living-alternative",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 4
+}
+
+### Update Category - Duplicate Slug
+PUT {{host}}/api/categories/{{computersCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Computers Updated Attempt",
+  "slug": "home-and-living",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": 1
+}
+
+### Update Category - Invalid Display Order
+PUT {{host}}/api/categories/{{updateCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Home and Living",
+  "slug": "home-and-living",
+  "description": null,
+  "imageUrl": null,
+  "displayOrder": -1
+}
+
+
+### Delete Category
+
+@deletableCategoryId = 9a6132a4-c17c-40d7-9cae-4c7bb554f0b3
+@categoryWithProductsId = 00b2dd31-9291-4ea9-a365-4fefb41f35e8
+
+### Delete Category - Has Products
+DELETE {{host}}/api/categories/{{categoryWithProductsId}}
+
+### Delete Category - Success
+DELETE {{host}}/api/categories/{{deletableCategoryId}}
+
+### Get Deleted Category - Not Found
+GET {{host}}/api/categories/{{deletableCategoryId}}
+
+### Delete Category - Already Deleted
+DELETE {{host}}/api/categories/{{deletableCategoryId}}
