@@ -600,3 +600,66 @@ GET {{host}}/api/brands?isActive=false
 
 ### Get Brands - Search Term Too Long
 GET {{host}}/api/brands?searchTerm=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+### Update Brand
+@updateBrandId = a186f488-5593-4fbc-8187-4ba76af30c22
+@secondaryBrandId = 5ca0df38-01d3-49fc-9c54-2cac88412c8e
+
+### Update Brand - Success
+PUT {{host}}/api/brands/{{updateBrandId}}
+Content-Type: application/json
+
+{
+  "name": "Nova Systems",
+  "slug": "NOVA-SYSTEMS",
+  "description": "Updated technology products and accessories.",
+  "logoUrl": "https://example.com/logos/nova-systems.png"
+}
+
+### Get Updated Brand
+GET {{host}}/api/brands/{{updateBrandId}}
+
+### Update Brand - Not Found
+PUT {{host}}/api/brands/11111111-1111-1111-1111-111111111111
+Content-Type: application/json
+
+{
+  "name": "Unknown Brand",
+  "slug": "unknown-brand",
+  "description": null,
+  "logoUrl": null
+}
+
+### Update Brand - Duplicate Name
+PUT {{host}}/api/brands/{{updateBrandId}}
+Content-Type: application/json
+
+{
+  "name": "Orbit",
+  "slug": "nova-systems-alternative",
+  "description": null,
+  "logoUrl": null
+}
+
+### Update Brand - Duplicate Slug
+PUT {{host}}/api/brands/{{secondaryBrandId}}
+Content-Type: application/json
+
+{
+  "name": "Orbit Updated Attempt",
+  "slug": "NOVA-SYSTEMS",
+  "description": null,
+  "logoUrl": null
+}
+
+### Update Brand - Invalid Request
+PUT {{host}}/api/brands/{{updateBrandId}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "slug": "invalid_brand_slug",
+  "description": null,
+  "logoUrl": "ftp://example.com/logo.png"
+}
