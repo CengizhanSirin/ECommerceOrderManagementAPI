@@ -522,7 +522,6 @@ DELETE {{host}}/api/categories/{{deletableCategoryId}}
 
 ### Create Brand
 
-@brandId = "a186f488-5593-4fbc-8187-4ba76af30c22"
 
 ### Create Brand - Success
 POST {{host}}/api/brands
@@ -576,3 +575,14 @@ Content-Type: application/json
   "description": null,
   "logoUrl": "ftp://example.com/logo.png"
 }
+
+
+
+### Get Brand By Id - Success
+GET {{host}}/api/brands/a186f488-5593-4fbc-8187-4ba76af30c22
+
+### Get Brand By Id - Not Found
+GET {{host}}/api/brands/11111111-1111-1111-1111-111111111111
+
+### Get Brand By Id - Empty Id
+GET {{host}}/api/brands/00000000-0000-0000-0000-000000000000
