@@ -3,6 +3,7 @@ using ECommerceOrderManagement.API.Features.Catalog.Categories.CreateCategory;
 using ECommerceOrderManagement.API.Features.Catalog.Categories.GetCategories;
 using ECommerceOrderManagement.API.Features.Catalog.Categories.UpdateCategory;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.CreateCategory;
+using ECommerceOrderManagement.Application.Features.Catalog.Categories.DeleteCategory;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.GetCategories;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.GetCategoryById;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories.UpdateCategory;
@@ -74,6 +75,22 @@ public sealed class CategoriesController(ISender sender) : BaseApiController
             request.Description,
             request.ImageUrl,
             request.DisplayOrder);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+
+
+    [HttpDelete("{categoryId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> DeleteCategory([FromRoute] Guid categoryId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteCategoryCommand(categoryId);
 
         var result = await sender.Send(command, cancellationToken);
 

@@ -499,3 +499,21 @@ Content-Type: application/json
   "imageUrl": null,
   "displayOrder": -1
 }
+
+
+### Delete Category
+
+@deletableCategoryId = 9a6132a4-c17c-40d7-9cae-4c7bb554f0b3
+@categoryWithProductsId = 00b2dd31-9291-4ea9-a365-4fefb41f35e8
+
+### Delete Category - Has Products
+DELETE {{host}}/api/categories/{{categoryWithProductsId}}
+
+### Delete Category - Success
+DELETE {{host}}/api/categories/{{deletableCategoryId}}
+
+### Get Deleted Category - Not Found
+GET {{host}}/api/categories/{{deletableCategoryId}}
+
+### Delete Category - Already Deleted
+DELETE {{host}}/api/categories/{{deletableCategoryId}}

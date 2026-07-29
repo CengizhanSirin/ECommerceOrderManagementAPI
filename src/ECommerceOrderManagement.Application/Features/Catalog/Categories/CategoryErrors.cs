@@ -23,4 +23,9 @@ public static class CategoryErrors
     {
         return Error.Conflict("Category.SlugAlreadyExists", $"A category with the slug '{slug}' already exists.");
     }
+
+    public static Error HasProducts(Guid categoryId)
+    {
+        return Error.Conflict("Category.HasProducts", $"The category with ID '{categoryId}' cannot be deleted because it contains products.");
+    }
 }
