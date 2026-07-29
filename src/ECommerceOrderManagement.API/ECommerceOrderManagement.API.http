@@ -517,3 +517,62 @@ GET {{host}}/api/categories/{{deletableCategoryId}}
 
 ### Delete Category - Already Deleted
 DELETE {{host}}/api/categories/{{deletableCategoryId}}
+
+
+
+### Create Brand
+
+@brandId = "a186f488-5593-4fbc-8187-4ba76af30c22"
+
+### Create Brand - Success
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "Nova Tech",
+  "slug": "NOVA-TECH",
+  "description": "Consumer electronics and computer accessories.",
+  "logoUrl": "https://example.com/logos/nova-tech.png"
+}
+
+### Create Brand - Minimal Request
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "Orbit",
+  "slug": "orbit"
+}
+
+### Create Brand - Duplicate Name
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "Nova Tech",
+  "slug": "nova-tech-different",
+  "description": null,
+  "logoUrl": null
+}
+
+### Create Brand - Duplicate Slug
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "Different Brand",
+  "slug": "NOVA-TECH",
+  "description": null,
+  "logoUrl": null
+}
+
+### Create Brand - Invalid Request
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "",
+  "slug": "invalid_brand_slug",
+  "description": null,
+  "logoUrl": "ftp://example.com/logo.png"
+}
