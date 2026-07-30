@@ -697,3 +697,44 @@ GET {{host}}/api/brands/{{deletableBrandId}}
 
 ### Delete Brand - Already Deleted
 DELETE {{host}}/api/brands/{{deletableBrandId}}
+
+
+### Invertory 
+
+@inventoryProductId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+
+### Create Inventory Item - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 25,
+  "reorderLevel": 5
+}
+
+### Create Inventory Item - Already Exists
+POST {{host}}/api/products/{{inventoryProductId}}/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 10,
+  "reorderLevel": 2
+}
+
+### Create Inventory Item - Product Not Found
+POST {{host}}/api/products/11111111-1111-1111-1111-111111111111/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 10,
+  "reorderLevel": 2
+}
+
+### Create Inventory Item - Invalid Quantities
+POST {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": -1,
+  "reorderLevel": -5
+}
