@@ -4,6 +4,10 @@ namespace ECommerceOrderManagement.Domain.Inventory;
 
 public sealed class InventoryItem : AggregateRoot
 {
+    private readonly List<StockMovement> _stockMovements = [];
+
+    public IReadOnlyCollection<StockMovement> StockMovements => _stockMovements;
+
     public Guid ProductId { get; private set; }
 
     public int QuantityOnHand { get; private set; }
@@ -44,14 +48,23 @@ public sealed class InventoryItem : AggregateRoot
         return new InventoryItem(productId, initialQuantity, reorderLevel);
     }
 
-    public void IncreaseStock(int quantity)
+    public void IncreaseStock(int quantity, string? reason = null)
     {
         EnsurePositiveQuantity(quantity);
 
+        var quantityOnHandBefore = QuantityOnHand;
+        var reservedQuantityBefore = ReservedQuantity;
+
         QuantityOnHand += quantity;
+
+        var stockMovement = StockMovement.Create(Id, ProductId, StockMovementType.Increase,
+       quantity, quantityOnHandBefore, QuantityOnHand, reservedQuantityBefore,
+       ReservedQuantity, reason);
+
+        _stockMovements.Add(stockMovement);
     }
 
-    public void DecreaseStock(int quantity)
+    public void DecreaseStock(int quantity, string? reason = null)
     {
         EnsurePositiveQuantity(quantity);
 
@@ -60,7 +73,15 @@ public sealed class InventoryItem : AggregateRoot
             throw new InvalidOperationException("Stock cannot be decreased below the reserved quantity.");
         }
 
+        var quantityOnHandBefore = QuantityOnHand;
+        var reservedQuantityBefore = ReservedQuantity;
+
         QuantityOnHand -= quantity;
+
+        var stockMovement = StockMovement.Create(Id, ProductId, StockMovementType.Decrease, quantity,
+        quantityOnHandBefore, QuantityOnHand, reservedQuantityBefore, ReservedQuantity, reason);
+
+        _stockMovements.Add(stockMovement);
     }
 
     public void ChangeReorderLevel(int reorderLevel)

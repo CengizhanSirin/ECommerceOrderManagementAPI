@@ -2,7 +2,7 @@
 using ECommerceOrderManagement.Application.Features.Catalog.Brands;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories;
 using ECommerceOrderManagement.Application.Features.Catalog.Products;
-using ECommerceOrderManagement.Application.Features.Invertory;
+using ECommerceOrderManagement.Application.Features.Inventory;
 using ECommerceOrderManagement.Persistence.Contexts;
 using ECommerceOrderManagement.Persistence.Interceptors;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog;

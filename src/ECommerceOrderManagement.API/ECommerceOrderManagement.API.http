@@ -894,3 +894,31 @@ GET {{host}}/api/inventory?pageSize=101
 
 ### Get Inventory List - Invalid Sorting
 GET {{host}}/api/inventory?sortBy=price&sortDirection=sideways
+
+
+###
+@inventoryProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Increase Stock With Reason
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 10,
+  "reason": "New supplier delivery"
+}
+
+### Get Inventory After Increase
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Decrease Stock With Reason
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 3,
+  "reason": "Damaged products removed from stock"
+}
+
+### Get Inventory After Decrease
+GET {{host}}/api/products/{{inventoryProductId}}/inventory

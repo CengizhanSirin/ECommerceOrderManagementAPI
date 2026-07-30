@@ -1,4 +1,4 @@
-﻿using ECommerceOrderManagement.Application.Features.Invertory;
+﻿using ECommerceOrderManagement.Application.Features.Inventory;
 using ECommerceOrderManagement.Domain.Inventory;
 using ECommerceOrderManagement.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;

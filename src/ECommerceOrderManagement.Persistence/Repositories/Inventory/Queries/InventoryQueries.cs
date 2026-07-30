@@ -1,7 +1,7 @@
 ﻿using ECommerceOrderManagement.Application.Common.Pagination;
-using ECommerceOrderManagement.Application.Features.Invertory;
-using ECommerceOrderManagement.Application.Features.Invertory.GetInventoryByProductId;
-using ECommerceOrderManagement.Application.Features.Invertory.GetInventoryList;
+using ECommerceOrderManagement.Application.Features.Inventory;
+using ECommerceOrderManagement.Application.Features.Inventory.GetInventoryByProductId;
+using ECommerceOrderManagement.Application.Features.Inventory.GetInventoryList;
 using ECommerceOrderManagement.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 

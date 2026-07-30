@@ -43,6 +43,15 @@ internal sealed class InventoryItemConfiguration : IEntityTypeConfiguration<Inve
             .HasForeignKey<InventoryItem>(inventoryItem => inventoryItem.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasMany(inventoryItem => inventoryItem.StockMovements)
+            .WithOne()
+            .HasForeignKey(stockMovement => stockMovement.InventoryItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(inventoryItem => inventoryItem.StockMovements)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+
         builder.Property<byte[]>("RowVersion").IsRowVersion();
 
 
