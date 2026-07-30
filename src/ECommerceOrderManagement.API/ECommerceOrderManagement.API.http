@@ -846,3 +846,51 @@ Content-Type: application/json
 {
   "reorderLevel": 10
 }
+
+
+
+
+### GetInventoryList
+@secondProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Create Second Inventory Item
+POST {{host}}/api/products/{{secondProductId}}/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 0,
+  "reorderLevel": 5
+}
+
+### Get Inventory List - Default
+GET {{host}}/api/inventory
+
+### Get Out Of Stock Inventory Items
+GET {{host}}/api/inventory?isOutOfStock=true
+
+### Get Inventory List - Search By Product Name
+GET {{host}}/api/inventory?search=Gaming
+
+### Get Inventory List - Search By Product Name
+GET {{host}}/api/inventory?search=Gaming
+
+### Get Inventory List - Sort By Available Quantity Ascending
+GET {{host}}/api/inventory?sortBy=availableQuantity&sortDirection=asc
+
+### Get Inventory List - Sort By Available Quantity Descending
+GET {{host}}/api/inventory?sortBy=availableQuantity&sortDirection=desc
+
+### Get Inventory List - First Page
+GET {{host}}/api/inventory?page=1&pageSize=1&sortBy=availableQuantity&sortDirection=asc
+
+### Get Inventory List - Second Page
+GET {{host}}/api/inventory?page=2&pageSize=1&sortBy=availableQuantity&sortDirection=asc
+
+### Get Inventory List - Invalid Page
+GET {{host}}/api/inventory?page=0
+
+### Get Inventory List - Invalid Page Size
+GET {{host}}/api/inventory?pageSize=101
+
+### Get Inventory List - Invalid Sorting
+GET {{host}}/api/inventory?sortBy=price&sortDirection=sideways
