@@ -1,8 +1,10 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
+using ECommerceOrderManagement.API.Features.Invertory.ChangeReorderLevel;
 using ECommerceOrderManagement.API.Features.Invertory.CreateInvertoryItem;
 using ECommerceOrderManagement.API.Features.Invertory.DecreaseStock;
 using ECommerceOrderManagement.API.Features.Invertory.IncreaseStock;
 using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProductById;
+using ECommerceOrderManagement.Application.Features.Invertory.ChangeReorderLevel;
 using ECommerceOrderManagement.Application.Features.Invertory.CreateInventoryItem;
 using ECommerceOrderManagement.Application.Features.Invertory.DecreaseStock;
 using ECommerceOrderManagement.Application.Features.Invertory.GetInventoryByProductId;
@@ -74,6 +76,21 @@ public sealed class ProductInventoryController(ISender sender) : BaseApiControll
     public async Task<IActionResult> DecreaseStock([FromRoute] Guid productId, [FromBody] DecreaseStockRequest request, CancellationToken cancellationToken)
     {
         var command = new DecreaseStockCommand(productId, request.Quantity);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+
+
+    [HttpPut("reorder-level")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ChangeReorderLevel([FromRoute] Guid productId, [FromBody] ChangeReorderLevelRequest request, CancellationToken cancellationToken)
+    {
+        var command = new ChangeReorderLevelCommand(productId, request.ReorderLevel);
 
         var result = await sender.Send(command, cancellationToken);
 

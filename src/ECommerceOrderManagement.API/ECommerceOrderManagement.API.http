@@ -814,3 +814,35 @@ Content-Type: application/json
 {
   "quantity": 0
 }
+
+
+
+### Change Reorder Level
+
+
+### Change Reorder Level - Success
+PUT {{host}}/api/products/{{inventoryProductId}}/inventory/reorder-level
+Content-Type: application/json
+
+{
+  "reorderLevel": 40
+}
+
+### Get Inventory After Reorder Level Change
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Change Reorder Level - Invalid Value
+PUT {{host}}/api/products/{{inventoryProductId}}/inventory/reorder-level
+Content-Type: application/json
+
+{
+  "reorderLevel": -1
+}
+
+### Change Reorder Level - Inventory Not Found
+PUT {{host}}/api/products/{{productWithoutInventoryId}}/inventory/reorder-level
+Content-Type: application/json
+
+{
+  "reorderLevel": 10
+}
