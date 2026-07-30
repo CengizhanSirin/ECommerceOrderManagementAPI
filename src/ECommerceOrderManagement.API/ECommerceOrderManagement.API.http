@@ -751,3 +751,37 @@ GET {{host}}/api/products/{{productWithoutInventoryId}}/inventory
 
 ### Get Inventory By Product Id - Empty Product Id
 GET {{host}}/api/products/00000000-0000-0000-0000-000000000000/inventory
+
+
+
+### IncreaseStock
+
+### Increase Stock - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 10
+}
+
+### Get Inventory After Increase
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Increase Stock - Inventory Not Found
+POST {{host}}/api/products/{{productWithoutInventoryId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+### Increase Stock - Invalid Quantity
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 0
+}
+
+
+
