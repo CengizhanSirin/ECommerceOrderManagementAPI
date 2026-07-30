@@ -785,3 +785,32 @@ Content-Type: application/json
 
 
 
+###DecreaseStock
+
+### Decrease Stock - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+
+### Get Inventory After Decrease
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Decrease Stock - Insufficient Stock
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 31
+}
+
+### Decrease Stock - Invalid Quantity
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 0
+}
