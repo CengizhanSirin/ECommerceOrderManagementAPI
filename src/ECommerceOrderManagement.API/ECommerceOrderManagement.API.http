@@ -738,3 +738,16 @@ Content-Type: application/json
   "initialQuantity": -1,
   "reorderLevel": -5
 }
+
+### GET 
+@inventoryProductId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+@productWithoutInventoryId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Get Inventory By Product Id - Success
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Get Inventory By Product Id - Inventory Not Found
+GET {{host}}/api/products/{{productWithoutInventoryId}}/inventory
+
+### Get Inventory By Product Id - Empty Product Id
+GET {{host}}/api/products/00000000-0000-0000-0000-000000000000/inventory

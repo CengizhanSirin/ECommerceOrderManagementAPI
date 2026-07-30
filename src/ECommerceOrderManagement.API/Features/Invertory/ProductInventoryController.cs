@@ -1,6 +1,8 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Invertory.CreateInvertoryItem;
+using ECommerceOrderManagement.Application.Features.Catalog.Products.GetProductById;
 using ECommerceOrderManagement.Application.Features.Invertory.CreateInventoryItem;
+using ECommerceOrderManagement.Application.Features.Invertory.GetInventoryByProductId;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,5 +26,20 @@ public sealed class ProductInventoryController(ISender sender) : BaseApiControll
         var result = await sender.Send(command, cancellationToken);
 
         return HandleCreatedResult(result, response => response, response => $"/api/products/{response.ProductId}/inventory");
+    }
+
+
+
+    [HttpGet]
+    [ProducesResponseType<GetInventoryByProductIdResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetInventoryByProductId([FromRoute] Guid productId, CancellationToken cancellationToken)
+    {
+        var query = new GetInventoryByProductIdQuery(productId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 }
