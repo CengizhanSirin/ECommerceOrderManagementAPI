@@ -4,6 +4,7 @@ using ECommerceOrderManagement.API.Features.Inventory.CreateInvertoryItem;
 using ECommerceOrderManagement.API.Features.Inventory.DecreaseStock;
 using ECommerceOrderManagement.API.Features.Inventory.GetStockMovementHistory;
 using ECommerceOrderManagement.API.Features.Inventory.IncreaseStock;
+using ECommerceOrderManagement.API.Features.Inventory.ReserveStock;
 using ECommerceOrderManagement.Application.Common.Pagination;
 using ECommerceOrderManagement.Application.Features.Inventory.ChangeReorderLevel;
 using ECommerceOrderManagement.Application.Features.Inventory.CreateInventoryItem;
@@ -11,6 +12,7 @@ using ECommerceOrderManagement.Application.Features.Inventory.DecreaseStock;
 using ECommerceOrderManagement.Application.Features.Inventory.GetInventoryByProductId;
 using ECommerceOrderManagement.Application.Features.Inventory.GetStockMovementHistory;
 using ECommerceOrderManagement.Application.Features.Inventory.IncreaseStock;
+using ECommerceOrderManagement.Application.Features.Inventory.ReserveStock;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -113,5 +115,21 @@ public sealed class ProductInventoryController(ISender sender) : BaseApiControll
         var result = await sender.Send(query, cancellationToken);
 
         return HandleResult(result);
+    }
+
+
+
+    [HttpPost("reserve")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> ReserveStock([FromRoute] Guid productId, [FromBody] ReserveStockRequest request, CancellationToken cancellationToken)
+    {
+        var command = new ReserveStockCommand(productId, request.Quantity, request.Reason);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
     }
 }
