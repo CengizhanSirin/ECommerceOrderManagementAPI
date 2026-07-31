@@ -12,11 +12,11 @@ POST {{host}}/api/products
 Content-Type: application/json
 
 {
-  "name": "Office Laptop Basic",
-  "slug": "office-laptop-basic",
-  "sku": "LAPTOP-002",
-  "description": "Günlük ofis kullanımı için temel dizüstü bilgisayar.",
-  "priceAmount": 18999.90,
+  "name": "Monster Dizüstü",
+  "slug": "monster-dizustu",
+  "sku": "Monster-002",
+  "description": "Monster gibi canavar sahip ol.",
+  "priceAmount": 56000.90,
   "currency": "TRY",
   "categoryId": "00b2dd31-9291-4ea9-a365-4fefb41f35e8",
   "brandId": null,
@@ -922,3 +922,49 @@ Content-Type: application/json
 
 ### Get Inventory After Decrease
 GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+
+
+
+
+### Stock Movement History
+@inventoryProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Get Stock Movement History - Success
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements
+
+### Get Increase Stock Movements
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Increase
+
+### Get Decrease Stock Movements
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Decrease
+
+### Get Stock Movements - First Page
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?page=1&pageSize=1&sortDirection=desc
+
+### Get Stock Movements - Second Page
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?page=2&pageSize=1&sortDirection=desc
+
+### Get Stock Movements - Invalid Page
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?page=0
+
+### Get Stock Movements - Invalid Page Size
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?pageSize=101
+
+### Get Stock Movements - Invalid Type
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=99
+
+### Get Stock Movements - Invalid Sort Direction
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?sortDirection=sideways
+
+###
+@missingProductId = 11111111-1111-1111-1111-111111111111
+
+### Get Stock Movements - Product Not Found
+GET {{host}}/api/products/{{missingProductId}}/inventory/movements
+
+###
+@productWithoutInventoryId = 75be60d2-9ff8-405e-8072-f53e5abe1834
+
+### Get Stock Movements - Inventory Not Found
+GET {{host}}/api/products/{{productWithoutInventoryId}}/inventory/movements

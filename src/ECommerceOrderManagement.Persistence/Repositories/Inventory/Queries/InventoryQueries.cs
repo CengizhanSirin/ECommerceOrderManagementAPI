@@ -2,6 +2,8 @@
 using ECommerceOrderManagement.Application.Features.Inventory;
 using ECommerceOrderManagement.Application.Features.Inventory.GetInventoryByProductId;
 using ECommerceOrderManagement.Application.Features.Inventory.GetInventoryList;
+using ECommerceOrderManagement.Application.Features.Inventory.GetStockMovementHistory;
+using ECommerceOrderManagement.Domain.Inventory;
 using ECommerceOrderManagement.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -116,6 +118,55 @@ public sealed class InventoryQueries(ApplicationDbContext dbContext) : IInventor
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetInventoryListItemResponse>(
+            items,
+            query.Page,
+            query.PageSize,
+            totalCount);
+    }
+
+    public async Task<PagedResult<GetStockMovementHistoryItemResponse>> GetStockMovementHistoryAsync(GetStockMovementHistoryQuery query, CancellationToken cancellationToken = default)
+    {
+        IQueryable<StockMovement> movementQuery = dbContext.StockMovements
+             .AsNoTracking()
+             .Where(stockMovement => stockMovement.ProductId == query.ProductId);
+
+        if (query.Type.HasValue)
+        {
+            movementQuery = movementQuery.Where(stockMovement => stockMovement.Type == query.Type.Value);
+        }
+
+        var totalCount = await movementQuery.CountAsync(cancellationToken);
+
+        var isDescending = query.SortDirection.Equals("desc", StringComparison.OrdinalIgnoreCase);
+
+        IOrderedQueryable<StockMovement> orderedQuery =
+                        isDescending ? movementQuery
+                                      .OrderByDescending(stockMovement => stockMovement.CreatedAtUtc)
+                                      .ThenByDescending(stockMovement => stockMovement.Id)
+                                      :
+                                      movementQuery.OrderBy(stockMovement => stockMovement.CreatedAtUtc)
+                                      .ThenBy(stockMovement => stockMovement.Id);
+
+        var items = await orderedQuery.Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).Select(
+            stockMovement => new GetStockMovementHistoryItemResponse
+            {
+                Id = stockMovement.Id,
+                InventoryItemId = stockMovement.InventoryItemId,
+                ProductId = stockMovement.ProductId,
+                Type = stockMovement.Type,
+                Quantity = stockMovement.Quantity,
+                QuantityOnHandBefore = stockMovement.QuantityOnHandBefore,
+                QuantityOnHandAfter = stockMovement.QuantityOnHandAfter,
+                ReservedQuantityBefore = stockMovement.ReservedQuantityBefore,
+                ReservedQuantityAfter = stockMovement.ReservedQuantityAfter,
+                AvailableQuantityBefore = stockMovement.QuantityOnHandBefore - stockMovement.ReservedQuantityBefore,
+                AvailableQuantityAfter = stockMovement.QuantityOnHandAfter - stockMovement.ReservedQuantityAfter,
+                Reason = stockMovement.Reason,
+                CreatedAtUtc = stockMovement.CreatedAtUtc
+            })
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<GetStockMovementHistoryItemResponse>(
             items,
             query.Page,
             query.PageSize,

@@ -2,11 +2,14 @@
 using ECommerceOrderManagement.API.Features.Inventory.ChangeReorderLevel;
 using ECommerceOrderManagement.API.Features.Inventory.CreateInvertoryItem;
 using ECommerceOrderManagement.API.Features.Inventory.DecreaseStock;
+using ECommerceOrderManagement.API.Features.Inventory.GetStockMovementHistory;
 using ECommerceOrderManagement.API.Features.Inventory.IncreaseStock;
+using ECommerceOrderManagement.Application.Common.Pagination;
 using ECommerceOrderManagement.Application.Features.Inventory.ChangeReorderLevel;
 using ECommerceOrderManagement.Application.Features.Inventory.CreateInventoryItem;
 using ECommerceOrderManagement.Application.Features.Inventory.DecreaseStock;
 using ECommerceOrderManagement.Application.Features.Inventory.GetInventoryByProductId;
+using ECommerceOrderManagement.Application.Features.Inventory.GetStockMovementHistory;
 using ECommerceOrderManagement.Application.Features.Inventory.IncreaseStock;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -94,5 +97,21 @@ public sealed class ProductInventoryController(ISender sender) : BaseApiControll
         var result = await sender.Send(command, cancellationToken);
 
         return HandleNoContent(result);
+    }
+
+
+
+    [HttpGet("movements")]
+    [ProducesResponseType<
+    PagedResult<GetStockMovementHistoryItemResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetStockMovementHistory([FromRoute] Guid productId, [FromQuery] GetStockMovementHistoryRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetStockMovementHistoryQuery(productId, request.Page, request.PageSize, request.Type, request.SortDirection);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 }

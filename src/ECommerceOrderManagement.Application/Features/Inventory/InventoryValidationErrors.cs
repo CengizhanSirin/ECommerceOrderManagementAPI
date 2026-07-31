@@ -22,4 +22,6 @@ internal static class InventoryValidationErrors
     public const string SortDirectionInvalidMessage = "Sort direction must be either 'asc' or 'desc'.";
     public const string ReasonTooLongCode = "Inventory.Reason.TooLong";
     public const string ReasonTooLongMessage = "Reason cannot exceed 500 characters.";
+    public const string StockMovementTypeInvalidCode = "Inventory.StockMovementType.Invalid";
+    public const string StockMovementTypeInvalidMessage = "Stock movement type is invalid.";
 }
