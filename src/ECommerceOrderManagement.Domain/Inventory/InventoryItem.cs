@@ -104,6 +104,26 @@ public sealed class InventoryItem : AggregateRoot
         _stockMovements.Add(stockMovement);
     }
 
+    public void ReleaseStock(int quantity, string? reason = null)
+    {
+        EnsurePositiveQuantity(quantity);
+
+        if (quantity > ReservedQuantity)
+        {
+            throw new InvalidOperationException("The requested quantity exceeds the reserved stock.");
+        }
+
+        var quantityOnHandBefore = QuantityOnHand;
+        var reservedQuantityBefore = ReservedQuantity;
+
+        ReservedQuantity -= quantity;
+
+        var stockMovement = StockMovement.Create(Id, ProductId, StockMovementType.Release, quantity, quantityOnHandBefore, QuantityOnHand,
+            reservedQuantityBefore, ReservedQuantity, reason);
+
+        _stockMovements.Add(stockMovement);
+    }
+
     public void ChangeReorderLevel(int reorderLevel)
     {
         EnsureNonNegativeQuantity(reorderLevel, nameof(reorderLevel));

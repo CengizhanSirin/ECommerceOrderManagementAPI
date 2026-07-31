@@ -28,4 +28,9 @@ internal static class InventoryErrors
     {
         return Error.Conflict("Inventory.ConcurrencyConflict", $"The inventory item for product ID '{productId}' was modified by another operation. Please retry.");
     }
+
+    public static Error InsufficientReservedStock(int requestedQuantity, int reservedQuantity)
+    {
+        return Error.Conflict("Inventory.InsufficientReservedStock", $"The requested quantity '{requestedQuantity}' exceeds the reserved stock '{reservedQuantity}'.");
+    }
 }
