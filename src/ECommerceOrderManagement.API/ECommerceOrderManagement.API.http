@@ -12,11 +12,11 @@ POST {{host}}/api/products
 Content-Type: application/json
 
 {
-  "name": "Office Laptop Basic",
-  "slug": "office-laptop-basic",
-  "sku": "LAPTOP-002",
-  "description": "Günlük ofis kullanımı için temel dizüstü bilgisayar.",
-  "priceAmount": 18999.90,
+  "name": "Monster Dizüstü",
+  "slug": "monster-dizustu",
+  "sku": "Monster-002",
+  "description": "Monster gibi canavar sahip ol.",
+  "priceAmount": 56000.90,
   "currency": "TRY",
   "categoryId": "00b2dd31-9291-4ea9-a365-4fefb41f35e8",
   "brandId": null,
@@ -697,3 +697,410 @@ GET {{host}}/api/brands/{{deletableBrandId}}
 
 ### Delete Brand - Already Deleted
 DELETE {{host}}/api/brands/{{deletableBrandId}}
+
+
+### Invertory 
+
+@inventoryProductId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+
+### Create Inventory Item - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 25,
+  "reorderLevel": 5
+}
+
+### Create Inventory Item - Already Exists
+POST {{host}}/api/products/{{inventoryProductId}}/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 10,
+  "reorderLevel": 2
+}
+
+### Create Inventory Item - Product Not Found
+POST {{host}}/api/products/11111111-1111-1111-1111-111111111111/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 10,
+  "reorderLevel": 2
+}
+
+### Create Inventory Item - Invalid Quantities
+POST {{host}}/api/products/6a4d9e38-7f7c-43ae-8391-e3e5f1868d44/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": -1,
+  "reorderLevel": -5
+}
+
+### GET 
+@inventoryProductId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+@productWithoutInventoryId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Get Inventory By Product Id - Success
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Get Inventory By Product Id - Inventory Not Found
+GET {{host}}/api/products/{{productWithoutInventoryId}}/inventory
+
+### Get Inventory By Product Id - Empty Product Id
+GET {{host}}/api/products/00000000-0000-0000-0000-000000000000/inventory
+
+
+
+### IncreaseStock
+
+### Increase Stock - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 10
+}
+
+### Get Inventory After Increase
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Increase Stock - Inventory Not Found
+POST {{host}}/api/products/{{productWithoutInventoryId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+### Increase Stock - Invalid Quantity
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 0
+}
+
+
+
+###DecreaseStock
+
+### Decrease Stock - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+
+### Get Inventory After Decrease
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Decrease Stock - Insufficient Stock
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 31
+}
+
+### Decrease Stock - Invalid Quantity
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 0
+}
+
+
+
+### Change Reorder Level
+
+
+### Change Reorder Level - Success
+PUT {{host}}/api/products/{{inventoryProductId}}/inventory/reorder-level
+Content-Type: application/json
+
+{
+  "reorderLevel": 40
+}
+
+### Get Inventory After Reorder Level Change
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Change Reorder Level - Invalid Value
+PUT {{host}}/api/products/{{inventoryProductId}}/inventory/reorder-level
+Content-Type: application/json
+
+{
+  "reorderLevel": -1
+}
+
+### Change Reorder Level - Inventory Not Found
+PUT {{host}}/api/products/{{productWithoutInventoryId}}/inventory/reorder-level
+Content-Type: application/json
+
+{
+  "reorderLevel": 10
+}
+
+
+
+
+### GetInventoryList
+@secondProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Create Second Inventory Item
+POST {{host}}/api/products/{{secondProductId}}/inventory
+Content-Type: application/json
+
+{
+  "initialQuantity": 0,
+  "reorderLevel": 5
+}
+
+### Get Inventory List - Default
+GET {{host}}/api/inventory
+
+### Get Out Of Stock Inventory Items
+GET {{host}}/api/inventory?isOutOfStock=true
+
+### Get Inventory List - Search By Product Name
+GET {{host}}/api/inventory?search=Gaming
+
+### Get Inventory List - Search By Product Name
+GET {{host}}/api/inventory?search=Gaming
+
+### Get Inventory List - Sort By Available Quantity Ascending
+GET {{host}}/api/inventory?sortBy=availableQuantity&sortDirection=asc
+
+### Get Inventory List - Sort By Available Quantity Descending
+GET {{host}}/api/inventory?sortBy=availableQuantity&sortDirection=desc
+
+### Get Inventory List - First Page
+GET {{host}}/api/inventory?page=1&pageSize=1&sortBy=availableQuantity&sortDirection=asc
+
+### Get Inventory List - Second Page
+GET {{host}}/api/inventory?page=2&pageSize=1&sortBy=availableQuantity&sortDirection=asc
+
+### Get Inventory List - Invalid Page
+GET {{host}}/api/inventory?page=0
+
+### Get Inventory List - Invalid Page Size
+GET {{host}}/api/inventory?pageSize=101
+
+### Get Inventory List - Invalid Sorting
+GET {{host}}/api/inventory?sortBy=price&sortDirection=sideways
+
+
+###
+@inventoryProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Increase Stock With Reason
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/increase
+Content-Type: application/json
+
+{
+  "quantity": 10,
+  "reason": "New supplier delivery"
+}
+
+### Get Inventory After Increase
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Decrease Stock With Reason
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/decrease
+Content-Type: application/json
+
+{
+  "quantity": 3,
+  "reason": "Damaged products removed from stock"
+}
+
+### Get Inventory After Decrease
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+
+
+
+
+### Stock Movement History
+@inventoryProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+
+### Get Stock Movement History - Success
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements
+
+### Get Increase Stock Movements
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Increase
+
+### Get Decrease Stock Movements
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Decrease
+
+### Get Stock Movements - First Page
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?page=1&pageSize=1&sortDirection=desc
+
+### Get Stock Movements - Second Page
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?page=2&pageSize=1&sortDirection=desc
+
+### Get Stock Movements - Invalid Page
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?page=0
+
+### Get Stock Movements - Invalid Page Size
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?pageSize=101
+
+### Get Stock Movements - Invalid Type
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=99
+
+### Get Stock Movements - Invalid Sort Direction
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?sortDirection=sideways
+
+###
+@missingProductId = 11111111-1111-1111-1111-111111111111
+
+### Get Stock Movements - Product Not Found
+GET {{host}}/api/products/{{missingProductId}}/inventory/movements
+
+###
+@productWithoutInventoryId = 75be60d2-9ff8-405e-8072-f53e5abe1834
+
+### Get Stock Movements - Inventory Not Found
+GET {{host}}/api/products/{{productWithoutInventoryId}}/inventory/movements
+
+
+
+
+### Reserve Stock
+
+@inventoryProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+@productWithoutInventoryId = 75be60d2-9ff8-405e-8072-f53e5abe1834
+@missingProductId = 11111111-1111-1111-1111-111111111111
+
+### Reserve Stock - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/reserve
+Content-Type: application/json
+
+{
+  "quantity": 3,
+  "reason": "Reserved for order preparation"
+}
+
+### Get Inventory After Reservation
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Reserve Stock - Insufficient Stock
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/reserve
+Content-Type: application/json
+
+{
+  "quantity": 5,
+  "reason": "Reservation exceeding available stock"
+}
+
+### Reserve Stock - Invalid Quantity
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/reserve
+Content-Type: application/json
+
+{
+  "quantity": 0,
+  "reason": "Invalid reservation"
+}
+
+### Reserve Stock - Reason Too Long
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/reserve
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "reason": "Bu metin tam olarak 501 karakterden olusmaktadir.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+
+### Reserve Stock - Product Not Found
+POST {{host}}/api/products/{{missingProductId}}/inventory/reserve
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "reason": "Missing product test"
+}
+
+### Reserve Stock - Inventory Not Found
+POST {{host}}/api/products/{{productWithoutInventoryId}}/inventory/reserve
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "reason": "Missing inventory test"
+}
+
+### Get Reserve Stock Movements
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Reserve
+
+
+
+### Release Stock
+@inventoryProductId = 6a4d9e38-7f7c-43ae-8391-e3e5f1868d44
+@productWithoutInventoryId = 75be60d2-9ff8-405e-8072-f53e5abe1834
+@missingProductId = 11111111-1111-1111-1111-111111111111
+
+### Release Stock - Success
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/release
+Content-Type: application/json
+
+{
+  "quantity": 2,
+  "reason": "Order reservation cancelled"
+}
+
+### Get Inventory After Release
+GET {{host}}/api/products/{{inventoryProductId}}/inventory
+
+### Release Stock - Insufficient Reserved Stock
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/release
+Content-Type: application/json
+
+{
+  "quantity": 6,
+  "reason": "Release exceeding reserved stock"
+}
+
+### Release Stock - Invalid Quantity
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/release
+Content-Type: application/json
+
+{
+  "quantity": 0,
+  "reason": "Invalid release test"
+}
+
+### Release Stock - Reason Too Long
+POST {{host}}/api/products/{{inventoryProductId}}/inventory/release
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "reason": "Bu metin tam olarak 501 karakterden olusmaktadir.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+
+### Release Stock - Product Not Found
+POST {{host}}/api/products/{{missingProductId}}/inventory/release
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "reason": "Missing product test"
+}
+
+### Release Stock - Inventory Not Found
+POST {{host}}/api/products/{{productWithoutInventoryId}}/inventory/release
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "reason": "Missing inventory test"
+}
+
+### Get Release Stock Movements
+GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Release

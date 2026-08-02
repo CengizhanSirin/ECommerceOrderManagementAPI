@@ -5,6 +5,7 @@ using ECommerceOrderManagement.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceOrderManagement.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260730141933_AddInventoryItems")]
+    partial class AddInventoryItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,70 +270,6 @@ namespace ECommerceOrderManagement.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ECommerceOrderManagement.Domain.Inventory.StockMovement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("InventoryItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuantityOnHandAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuantityOnHandBefore")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("ReservedQuantityAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReservedQuantityBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("InventoryItemId", "CreatedAtUtc");
-
-                    b.ToTable("StockMovements", "inventory", t =>
-                        {
-                            t.HasCheckConstraint("CK_StockMovements_QuantityOnHandAfter_NonNegative", "[QuantityOnHandAfter] >= 0");
-
-                            t.HasCheckConstraint("CK_StockMovements_QuantityOnHandBefore_NonNegative", "[QuantityOnHandBefore] >= 0");
-
-                            t.HasCheckConstraint("CK_StockMovements_Quantity_Positive", "[Quantity] > 0");
-
-                            t.HasCheckConstraint("CK_StockMovements_ReservedAfter_NotExceedOnHand", "[ReservedQuantityAfter] <= [QuantityOnHandAfter]");
-
-                            t.HasCheckConstraint("CK_StockMovements_ReservedBefore_NotExceedOnHand", "[ReservedQuantityBefore] <= [QuantityOnHandBefore]");
-
-                            t.HasCheckConstraint("CK_StockMovements_ReservedQuantityAfter_NonNegative", "[ReservedQuantityAfter] >= 0");
-
-                            t.HasCheckConstraint("CK_StockMovements_ReservedQuantityBefore_NonNegative", "[ReservedQuantityBefore] >= 0");
-                        });
-                });
-
             modelBuilder.Entity("ECommerceOrderManagement.Domain.Catalog.Product", b =>
                 {
                     b.HasOne("ECommerceOrderManagement.Domain.Catalog.Brand", null)
@@ -352,20 +291,6 @@ namespace ECommerceOrderManagement.Persistence.Migrations
                         .HasForeignKey("ECommerceOrderManagement.Domain.Inventory.InventoryItem", "ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ECommerceOrderManagement.Domain.Inventory.StockMovement", b =>
-                {
-                    b.HasOne("ECommerceOrderManagement.Domain.Inventory.InventoryItem", null)
-                        .WithMany("StockMovements")
-                        .HasForeignKey("InventoryItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ECommerceOrderManagement.Domain.Inventory.InventoryItem", b =>
-                {
-                    b.Navigation("StockMovements");
                 });
 #pragma warning restore 612, 618
         }
