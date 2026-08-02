@@ -25,8 +25,6 @@ public sealed class ChangeReorderLevelCommandHandler(IProductRepository productR
 
         inventoryItem.ChangeReorderLevel(command.ReorderLevel);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Success();
+        return await unitOfWork.SaveInventoryChangesAsync(command.ProductId, cancellationToken);
     }
 }

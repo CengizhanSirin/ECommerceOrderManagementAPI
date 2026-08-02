@@ -30,8 +30,6 @@ public sealed class ReserveStockCommandHandler(IProductRepository productReposit
 
         inventoryItem.ReserveStock(command.Quantity, command.Reason);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Success();
+        return await unitOfWork.SaveInventoryChangesAsync(command.ProductId, cancellationToken);
     }
 }

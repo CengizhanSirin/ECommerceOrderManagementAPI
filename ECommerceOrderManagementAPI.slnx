@@ -18,5 +18,7 @@
   <Folder Name="/src/Persistence/">
     <Project Path="src/ECommerceOrderManagement.Persistence/ECommerceOrderManagement.Persistence.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/ECommerceOrderManagement.IntegrationTests/ECommerceOrderManagement.IntegrationTests.csproj" />
+  </Folder>
 </Solution>

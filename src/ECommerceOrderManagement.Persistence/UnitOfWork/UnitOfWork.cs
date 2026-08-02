@@ -1,5 +1,7 @@
 ﻿using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
+using ECommerceOrderManagement.Application.Common.Exceptions;
 using ECommerceOrderManagement.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ECommerceOrderManagement.Persistence.UnitOfWork;
@@ -54,9 +56,17 @@ internal sealed class UnitOfWork : IUnitOfWork, IAsyncDisposable
         await DisposeCurrentTransactionAsync();
     }
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            return await _dbContext.SaveChangesAsync(cancellationToken);
+
+        }
+        catch (DbUpdateConcurrencyException exception)
+        {
+            throw new ConcurrencyConflictException("The data was modified by another operation.", exception);
+        }
     }
 
     private async ValueTask DisposeCurrentTransactionAsync()

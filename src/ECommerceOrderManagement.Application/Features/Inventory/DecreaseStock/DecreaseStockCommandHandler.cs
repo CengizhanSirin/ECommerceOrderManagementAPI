@@ -29,10 +29,8 @@ public sealed class DecreaseStockCommandHandler(IProductRepository productReposi
         }
 
 
-        inventoryItem.DecreaseStock(command.Quantity,command.Reason);
+        inventoryItem.DecreaseStock(command.Quantity, command.Reason);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Success();
+        return await unitOfWork.SaveInventoryChangesAsync(command.ProductId, cancellationToken);
     }
 }
