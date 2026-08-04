@@ -1,7 +1,10 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Orders.CreateOrder;
+using ECommerceOrderManagement.API.Features.Orders.GetOrders;
+using ECommerceOrderManagement.Application.Common.Pagination;
 using ECommerceOrderManagement.Application.Features.Orders.CreateOrder;
 using ECommerceOrderManagement.Application.Features.Orders.GetOrderById;
+using ECommerceOrderManagement.Application.Features.Orders.GetOrders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +37,27 @@ public sealed class OrdersController(ISender sender) : BaseApiController
     public async Task<IActionResult> GetOrderById([FromRoute] Guid orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderByIdQuery(orderId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
+    }
+
+
+
+    [HttpGet]
+    [ProducesResponseType<PagedResult<GetOrdersItemResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetOrders([FromQuery] GetOrdersRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetOrdersQuery(
+            request.PageNumber,
+            request.PageSize,
+            request.SearchTerm,
+            request.CustomerId,
+            request.Status,
+            request.SortBy,
+            request.SortDirection);
 
         var result = await sender.Send(query, cancellationToken);
 

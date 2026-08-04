@@ -1,5 +1,8 @@
-﻿using ECommerceOrderManagement.Application.Features.Orders;
+﻿using ECommerceOrderManagement.Application.Common.Pagination;
+using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Application.Features.Orders.GetOrderById;
+using ECommerceOrderManagement.Application.Features.Orders.GetOrders;
+using ECommerceOrderManagement.Domain.Orders;
 using ECommerceOrderManagement.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,5 +53,84 @@ internal sealed class OrderQueries(ApplicationDbContext dbContext) : IOrderQueri
                 order.CreatedAtUtc,
                 order.UpdatedAtUtc))
             .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<PagedResult<GetOrdersItemResponse>> GetPagedAsync(GetOrdersQuery query, CancellationToken cancellationToken = default)
+    {
+        IQueryable<Order> ordersQuery = dbContext.Orders.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+        {
+            var searchTerm = query.SearchTerm.Trim();
+
+            ordersQuery = ordersQuery.Where(order => order.OrderNumber.Contains(searchTerm));
+        }
+
+        if (query.CustomerId.HasValue)
+        {
+            ordersQuery = ordersQuery.Where(order => order.CustomerId == query.CustomerId.Value);
+        }
+
+        if (query.Status.HasValue)
+        {
+            ordersQuery = ordersQuery.Where(order => order.Status == query.Status.Value);
+        }
+
+        var totalCount = await ordersQuery.CountAsync(cancellationToken);
+
+        var orderedQuery = ApplySorting(ordersQuery, query.SortBy, query.SortDirection);
+
+        var items = await orderedQuery
+            .ThenBy(order => order.Id)
+            .Skip((query.PageNumber - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .Select(order => new GetOrdersItemResponse(
+                order.Id,
+                order.CustomerId,
+                order.OrderNumber,
+                order.Status,
+                order.Items.Count(),
+                order.Items.Sum(item => (decimal?)(item.UnitPrice * item.Quantity)) ?? 0m,
+                order.CreatedAtUtc,
+                order.UpdatedAtUtc))
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<GetOrdersItemResponse>(items, query.PageNumber, query.PageSize, totalCount);
+    }
+
+    private static IOrderedQueryable<Order> ApplySorting(IQueryable<Order> query, string? sortBy, string? sortDirection)
+    {
+        var normalizedSortBy = string.IsNullOrWhiteSpace(sortBy)
+            ? "createdatutc"
+            : sortBy.Trim().ToLowerInvariant();
+
+        var isDescending = string.IsNullOrWhiteSpace(sortDirection) || sortDirection.Equals("desc", StringComparison.OrdinalIgnoreCase);
+
+        return (normalizedSortBy, isDescending) switch
+        {
+            ("ordernumber", false) => query.OrderBy(order => order.OrderNumber),
+
+            ("ordernumber", true) => query.OrderByDescending(order => order.OrderNumber),
+
+            ("status", false) => query.OrderBy(order => order.Status),
+
+            ("status", true) => query.OrderByDescending(order => order.Status),
+
+            ("itemcount", false) => query.OrderBy(order => order.Items.Count()),
+
+            ("itemcount", true) => query.OrderByDescending(order => order.Items.Count()),
+
+            ("totalamount", false) =>
+                query.OrderBy(order =>
+                    order.Items.Sum(item => (decimal?)(item.UnitPrice * item.Quantity)) ?? 0m),
+
+            ("totalamount", true) =>
+                query.OrderByDescending(order =>
+                    order.Items.Sum(item => (decimal?)(item.UnitPrice * item.Quantity)) ?? 0m),
+
+            ("createdatutc", false) => query.OrderBy(order => order.CreatedAtUtc),
+
+            _ => query.OrderByDescending(order => order.CreatedAtUtc)
+        };
     }
 }

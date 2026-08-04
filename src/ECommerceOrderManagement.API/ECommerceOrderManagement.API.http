@@ -1166,3 +1166,28 @@ GET {{host}}/api/orders/{{createdOrderId}}
 
 ### Get Order By Id - Not Found
 GET {{host}}/api/orders/{{missingOrderId}}
+
+
+
+### Get Orders Paged
+
+### Get Orders - Default
+GET {{host}}/api/orders
+
+### Get Orders - Filter By Customer
+GET {{host}}/api/orders?customerId={{orderCustomerId}}
+
+### Get Orders - Filter By Pending Status
+GET {{host}}/api/orders?status=1
+
+### Get Orders - Search By Order Number
+GET {{host}}/api/orders?searchTerm=ORD-20260804-AC445DBF
+
+### Get Orders - Sort By Total Amount Descending
+GET {{host}}/api/orders?sortBy=totalAmount&sortDirection=desc
+
+### Get Orders - Invalid Page Number
+GET {{host}}/api/orders?pageNumber=0&pageSize=10
+
+### Get Orders - Invalid Sort Field
+GET {{host}}/api/orders?sortBy=unknown&sortDirection=desc

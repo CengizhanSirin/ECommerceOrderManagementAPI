@@ -71,4 +71,25 @@ public static class OrderValidationErrors
 
     public const string OrderIdRequiredCode = "Orders.OrderIdRequired";
     public const string OrderIdRequiredMessage = "Order id is required.";
+
+    public const string PageNumberMustBePositiveCode = "Orders.PageNumberMustBePositive";
+    public const string PageNumberMustBePositiveMessage = "Page number must be greater than zero.";
+
+    public const string PageSizeOutOfRangeCode = "Orders.PageSizeOutOfRange";
+    public const string PageSizeOutOfRangeMessage = "Page size must be between 1 and 100.";
+
+    public const string SearchTermTooLongCode = "Orders.SearchTermTooLong";
+    public const string SearchTermTooLongMessage = "Search term cannot exceed 50 characters.";
+
+    public const string CustomerIdInvalidCode = "Orders.CustomerIdInvalid";
+    public const string CustomerIdInvalidMessage = "Customer id cannot be empty.";
+
+    public const string StatusInvalidCode = "Orders.StatusInvalid";
+    public const string StatusInvalidMessage = "Order status is invalid.";
+
+    public const string SortByInvalidCode = "Orders.SortByInvalid";
+    public const string SortByInvalidMessage = "Sort by value is invalid.";
+
+    public const string SortDirectionInvalidCode = "Orders.SortDirectionInvalid";
+    public const string SortDirectionInvalidMessage = "Sort direction must be either 'asc' or 'desc'.";
 }
