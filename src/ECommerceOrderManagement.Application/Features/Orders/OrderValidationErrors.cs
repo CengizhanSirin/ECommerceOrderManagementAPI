@@ -68,4 +68,7 @@ public static class OrderValidationErrors
 
     public const string CancellationReasonTooLongCode = "Orders.CancellationReasonTooLong";
     public const string CancellationReasonTooLongMessage = "Cancellation reason cannot exceed 500 characters.";
+
+    public const string OrderIdRequiredCode = "Orders.OrderIdRequired";
+    public const string OrderIdRequiredMessage = "Order id is required.";
 }

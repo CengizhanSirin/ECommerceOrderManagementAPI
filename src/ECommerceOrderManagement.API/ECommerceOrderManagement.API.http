@@ -1151,3 +1151,18 @@ GET {{host}}/api/products/{{orderProductId}}/inventory
 
 ### Get Reservation Movement After Order Creation
 GET {{host}}/api/products/{{orderProductId}}/inventory/movements?type=Reserve
+
+
+
+
+
+### Order Management
+
+@createdOrderId = 90c1e8ad-3b00-4a38-9e1a-d14d2a6f18d1
+@missingOrderId = 11111111-1111-1111-1111-111111111111
+
+### Get Order By Id - Success
+GET {{host}}/api/orders/{{createdOrderId}}
+
+### Get Order By Id - Not Found
+GET {{host}}/api/orders/{{missingOrderId}}

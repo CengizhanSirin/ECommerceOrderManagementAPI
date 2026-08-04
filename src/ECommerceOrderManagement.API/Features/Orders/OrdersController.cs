@@ -1,6 +1,7 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Orders.CreateOrder;
 using ECommerceOrderManagement.Application.Features.Orders.CreateOrder;
+using ECommerceOrderManagement.Application.Features.Orders.GetOrderById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,21 @@ public sealed class OrdersController(ISender sender) : BaseApiController
         var result = await sender.Send(command, cancellationToken);
 
         return HandleCreatedResult(result, response => response, response => $"/api/orders/{response.OrderId}");
+    }
+
+
+
+    [HttpGet("{orderId:guid}")]
+    [ProducesResponseType<GetOrderByIdResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetOrderById([FromRoute] Guid orderId, CancellationToken cancellationToken)
+    {
+        var query = new GetOrderByIdQuery(orderId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 
     private static CreateOrderAddress MapAddress(CreateOrderAddressRequest address)
