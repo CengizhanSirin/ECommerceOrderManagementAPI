@@ -16,4 +16,9 @@ internal sealed class InventoryRepository(ApplicationDbContext dbContext) : Repo
     {
         return DbSet.AnyAsync(inventoryItem => inventoryItem.ProductId == productId, cancellationToken);
     }
+
+    public async Task<IReadOnlyCollection<InventoryItem>> GetByProductIdsAsync(IReadOnlyCollection<Guid> productIds, CancellationToken cancellationToken = default)
+    {
+        return await DbSet.Where(inventoryItem => productIds.Contains(inventoryItem.ProductId)).ToListAsync(cancellationToken);
+    }
 }

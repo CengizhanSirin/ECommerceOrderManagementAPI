@@ -1,6 +1,7 @@
 using ECommerceOrderManagement.API.Common.Exceptions;
 using ECommerceOrderManagement.Application.DependencyInjection;
 using ECommerceOrderManagement.Persistence.DependencyInjection;
+using ECommerceOrderManagement.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure();
+
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

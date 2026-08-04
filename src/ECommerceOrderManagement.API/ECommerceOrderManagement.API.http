@@ -1104,3 +1104,50 @@ Content-Type: application/json
 
 ### Get Release Stock Movements
 GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Release
+
+
+
+### Create Order
+
+@orderCustomerId = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@orderProductId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+@orderProductWithoutInventoryId = 75be60d2-9ff8-405e-8072-f53e5abe1834
+@missingOrderProductId = 11111111-1111-1111-1111-111111111111
+
+### Create Order - Success
+POST {{host}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": "{{orderCustomerId}}",
+  "shippingAddress": {
+    "fullName": "Cengiz Test",
+    "phoneNumber": "05551234567",
+    "country": "Türkiye",
+    "city": "İstanbul",
+    "district": "Kadıköy",
+    "postalCode": "34710",
+    "addressLine": "Caferağa Mahallesi Test Sokak No: 10"
+  },
+  "billingAddress": {
+    "fullName": "Cengiz Test",
+    "phoneNumber": "05551234567",
+    "country": "Türkiye",
+    "city": "İstanbul",
+    "district": "Kadıköy",
+    "postalCode": "34710",
+    "addressLine": "Caferağa Mahallesi Test Sokak No: 10"
+  },
+  "items": [
+    {
+      "productId": "{{orderProductId}}",
+      "quantity": 2
+    }
+  ]
+}
+
+### Get Inventory After Order Creation
+GET {{host}}/api/products/{{orderProductId}}/inventory
+
+### Get Reservation Movement After Order Creation
+GET {{host}}/api/products/{{orderProductId}}/inventory/movements?type=Reserve

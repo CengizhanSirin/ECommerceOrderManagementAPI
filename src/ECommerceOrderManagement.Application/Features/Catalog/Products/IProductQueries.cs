@@ -9,4 +9,6 @@ public interface IProductQueries
     Task<GetProductByIdResponse?> GetByIdAsync(Guid productId, CancellationToken cancellationToken = default);
 
     Task<PagedResult<GetProductsItemResponse>> GetPagedAsync(GetProductsQuery query, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<ProductOrderSnapshotDto>> GetActiveOrderSnapshotsByIdsAsync(IReadOnlyCollection<Guid> productIds, CancellationToken cancellationToken = default);
 }

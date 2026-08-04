@@ -8,4 +8,6 @@ public interface IInventoryRepository : IRepository<InventoryItem>
     Task<InventoryItem?> GetByProductIdAsync(Guid productId, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsByProductIdAsync(Guid productId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<InventoryItem>> GetByProductIdsAsync(IReadOnlyCollection<Guid> productIds, CancellationToken cancellationToken = default);
 }

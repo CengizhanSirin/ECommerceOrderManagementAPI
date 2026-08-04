@@ -57,25 +57,25 @@ internal sealed class ProductQueries(ApplicationDbContext dbContext) : IProductQ
         if (query.CategoryId.HasValue)
         {
             productsQuery = productsQuery.Where(product => product.CategoryId == query.CategoryId.Value);
-               
+
         }
 
         if (query.BrandId.HasValue)
         {
-            productsQuery = productsQuery.Where(product =>product.BrandId == query.BrandId.Value);
-                
+            productsQuery = productsQuery.Where(product => product.BrandId == query.BrandId.Value);
+
         }
 
         if (query.IsActive.HasValue)
         {
             productsQuery = productsQuery.Where(product => product.IsActive == query.IsActive.Value);
-               
+
         }
 
         var totalCount = await productsQuery.CountAsync(cancellationToken);
-            
 
-        productsQuery = ApplySorting(productsQuery,query.SortBy, query.SortDirection);
+
+        productsQuery = ApplySorting(productsQuery, query.SortBy, query.SortDirection);
 
         var items = await productsQuery
             .Skip((query.PageNumber - 1) * query.PageSize)
@@ -90,13 +90,13 @@ internal sealed class ProductQueries(ApplicationDbContext dbContext) : IProductQ
                 Currency = product.Price.Currency,
                 CategoryId = product.CategoryId,
                 CategoryName = dbContext.Categories
-                    .Where(category =>category.Id == product.CategoryId)
+                    .Where(category => category.Id == product.CategoryId)
                     .Select(category => category.Name)
                     .Single(),
                 BrandId = product.BrandId,
                 BrandName = product.BrandId.HasValue
                     ? dbContext.Brands
-                        .Where(brand =>brand.Id == product.BrandId.Value) 
+                        .Where(brand => brand.Id == product.BrandId.Value)
                         .Select(brand => brand.Name)
                         .Single()
                     : null,
@@ -106,7 +106,7 @@ internal sealed class ProductQueries(ApplicationDbContext dbContext) : IProductQ
             })
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<GetProductsItemResponse>(items,query.PageNumber, query.PageSize, totalCount);
+        return new PagedResult<GetProductsItemResponse>(items, query.PageNumber, query.PageSize, totalCount);
     }
 
     private static IQueryable<Product> ApplySorting(IQueryable<Product> productsQuery, ProductSortField sortBy, SortDirection sortDirection)
@@ -149,5 +149,18 @@ internal sealed class ProductQueries(ApplicationDbContext dbContext) : IProductQ
                     .OrderByDescending(product => product.CreatedAtUtc)
                     .ThenBy(product => product.Id)
         };
+    }
+
+    public async Task<IReadOnlyCollection<ProductOrderSnapshotDto>> GetActiveOrderSnapshotsByIdsAsync(IReadOnlyCollection<Guid> productIds, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Products
+            .AsNoTracking()
+            .Where(product => productIds.Contains(product.Id) && product.IsActive)
+            .Select(product => new ProductOrderSnapshotDto(
+             product.Id,
+             product.Name,
+             product.Sku,
+             product.Price.Amount))
+            .ToListAsync(cancellationToken);
     }
 }
