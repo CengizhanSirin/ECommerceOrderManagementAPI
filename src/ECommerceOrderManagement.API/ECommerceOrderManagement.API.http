@@ -1191,3 +1191,50 @@ GET {{host}}/api/orders?pageNumber=0&pageSize=10
 
 ### Get Orders - Invalid Sort Field
 GET {{host}}/api/orders?sortBy=unknown&sortDirection=desc
+
+
+
+
+
+### Cancel Order
+
+### Cancel Order - Success
+POST {{host}}/api/orders/{{createdOrderId}}/cancel
+Content-Type: application/json
+
+{
+  "reason": "Customer requested cancellation."
+}
+
+### Get Cancelled Order
+GET {{host}}/api/orders/{{createdOrderId}}
+
+### Get Inventory After Cancellation
+GET {{host}}/api/products/{{orderProductId}}/inventory
+
+### Cancel Order Again - Conflict
+POST {{host}}/api/orders/{{createdOrderId}}/cancel
+Content-Type: application/json
+
+{
+  "reason": "Second cancellation attempt."
+}
+
+
+
+
+
+###
+@workflowOrderId = 37ed23e0-20a8-4c91-9bb2-032f9d8d7606
+
+### Process Order
+POST {{host}}/api/orders/{{workflowOrderId}}/process
+
+### Ship Order
+POST {{host}}/api/orders/{{workflowOrderId}}/ship
+
+### Deliver Order
+POST {{host}}/api/orders/{{workflowOrderId}}/deliver
+
+### Get Completed Order
+GET {{host}}/api/orders/{{workflowOrderId}}

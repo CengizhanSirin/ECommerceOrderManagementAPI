@@ -48,4 +48,9 @@ public static class OrderErrors
     {
         return Error.Conflict("Orders.CannotDeliver", $"The order with id '{orderId}' cannot be delivered in its current status.");
     }
+
+    public static Error ReservationConflict(Guid productId)
+    {
+        return Error.Conflict("Orders.ReservationConflict", $"The reserved stock is insufficient for product '{productId}'.");
+    }
 }
