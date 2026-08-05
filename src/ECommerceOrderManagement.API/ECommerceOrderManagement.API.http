@@ -1104,3 +1104,137 @@ Content-Type: application/json
 
 ### Get Release Stock Movements
 GET {{host}}/api/products/{{inventoryProductId}}/inventory/movements?type=Release
+
+
+
+### Create Order
+
+@orderCustomerId = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@orderProductId = c12aaee1-5ad6-4d6b-ac7c-ba8d3559d375
+@orderProductWithoutInventoryId = 75be60d2-9ff8-405e-8072-f53e5abe1834
+@missingOrderProductId = 11111111-1111-1111-1111-111111111111
+
+### Create Order - Success
+POST {{host}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": "{{orderCustomerId}}",
+  "shippingAddress": {
+    "fullName": "Cengiz Test",
+    "phoneNumber": "05551234567",
+    "country": "Türkiye",
+    "city": "İstanbul",
+    "district": "Kadıköy",
+    "postalCode": "34710",
+    "addressLine": "Caferağa Mahallesi Test Sokak No: 10"
+  },
+  "billingAddress": {
+    "fullName": "Cengiz Test",
+    "phoneNumber": "05551234567",
+    "country": "Türkiye",
+    "city": "İstanbul",
+    "district": "Kadıköy",
+    "postalCode": "34710",
+    "addressLine": "Caferağa Mahallesi Test Sokak No: 10"
+  },
+  "items": [
+    {
+      "productId": "{{orderProductId}}",
+      "quantity": 2
+    }
+  ]
+}
+
+### Get Inventory After Order Creation
+GET {{host}}/api/products/{{orderProductId}}/inventory
+
+### Get Reservation Movement After Order Creation
+GET {{host}}/api/products/{{orderProductId}}/inventory/movements?type=Reserve
+
+
+
+
+
+### Order Management
+
+@createdOrderId = 90c1e8ad-3b00-4a38-9e1a-d14d2a6f18d1
+@missingOrderId = 11111111-1111-1111-1111-111111111111
+
+### Get Order By Id - Success
+GET {{host}}/api/orders/{{createdOrderId}}
+
+### Get Order By Id - Not Found
+GET {{host}}/api/orders/{{missingOrderId}}
+
+
+
+### Get Orders Paged
+
+### Get Orders - Default
+GET {{host}}/api/orders
+
+### Get Orders - Filter By Customer
+GET {{host}}/api/orders?customerId={{orderCustomerId}}
+
+### Get Orders - Filter By Pending Status
+GET {{host}}/api/orders?status=1
+
+### Get Orders - Search By Order Number
+GET {{host}}/api/orders?searchTerm=ORD-20260804-AC445DBF
+
+### Get Orders - Sort By Total Amount Descending
+GET {{host}}/api/orders?sortBy=totalAmount&sortDirection=desc
+
+### Get Orders - Invalid Page Number
+GET {{host}}/api/orders?pageNumber=0&pageSize=10
+
+### Get Orders - Invalid Sort Field
+GET {{host}}/api/orders?sortBy=unknown&sortDirection=desc
+
+
+
+
+
+### Cancel Order
+
+### Cancel Order - Success
+POST {{host}}/api/orders/{{createdOrderId}}/cancel
+Content-Type: application/json
+
+{
+  "reason": "Customer requested cancellation."
+}
+
+### Get Cancelled Order
+GET {{host}}/api/orders/{{createdOrderId}}
+
+### Get Inventory After Cancellation
+GET {{host}}/api/products/{{orderProductId}}/inventory
+
+### Cancel Order Again - Conflict
+POST {{host}}/api/orders/{{createdOrderId}}/cancel
+Content-Type: application/json
+
+{
+  "reason": "Second cancellation attempt."
+}
+
+
+
+
+
+###
+@workflowOrderId = 37ed23e0-20a8-4c91-9bb2-032f9d8d7606
+
+### Process Order
+POST {{host}}/api/orders/{{workflowOrderId}}/process
+
+### Ship Order
+POST {{host}}/api/orders/{{workflowOrderId}}/ship
+
+### Deliver Order
+POST {{host}}/api/orders/{{workflowOrderId}}/deliver
+
+### Get Completed Order
+GET {{host}}/api/orders/{{workflowOrderId}}

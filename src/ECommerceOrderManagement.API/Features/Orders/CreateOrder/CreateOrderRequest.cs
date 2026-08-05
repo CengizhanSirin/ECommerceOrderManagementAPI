@@ -1,0 +1,3 @@
+﻿namespace ECommerceOrderManagement.API.Features.Orders.CreateOrder;
+
+public sealed record CreateOrderRequest(Guid CustomerId, CreateOrderAddressRequest ShippingAddress, CreateOrderAddressRequest BillingAddress, IReadOnlyCollection<CreateOrderItemRequest> Items);
