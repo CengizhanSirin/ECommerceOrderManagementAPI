@@ -6,12 +6,6 @@ public sealed class CreateOrderCommandValidator : AbstractValidator<CreateOrderC
 {
     public CreateOrderCommandValidator()
     {
-
-        RuleFor(command => command.CustomerId)
-               .NotEmpty()
-               .WithErrorCode(OrderValidationErrors.CustomerIdRequiredCode)
-               .WithMessage(OrderValidationErrors.CustomerIdRequiredMessage);
-
         RuleFor(command => command.ShippingAddress)
             .NotNull()
             .WithErrorCode(OrderValidationErrors.ShippingAddressRequiredCode)
