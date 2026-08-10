@@ -1,9 +1,11 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Authentication.Login;
 using ECommerceOrderManagement.API.Features.Authentication.Register;
+using ECommerceOrderManagement.Application.Features.Authentication.CurrentUser;
 using ECommerceOrderManagement.Application.Features.Authentication.Login;
 using ECommerceOrderManagement.Application.Features.Authentication.Register;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceOrderManagement.API.Features.Authentication;
@@ -40,6 +42,19 @@ public sealed class AuthenticationController(ISender sender) : BaseApiController
         var command = new LoginCommand(request.Email, request.Password);
 
         var result = await sender.Send(command, cancellationToken);
+
+        return HandleResult(result);
+    }
+
+
+
+    [Authorize]
+    [HttpGet("me")]
+    [ProducesResponseType<CurrentUserResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetCurrentUserQuery(), cancellationToken);
 
         return HandleResult(result);
     }

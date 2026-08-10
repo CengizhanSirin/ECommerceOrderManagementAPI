@@ -75,6 +75,8 @@ public static class InfrastructureServiceCollectionExtensions
             })
             .AddJwtBearer(options =>
             {
+                options.MapInboundClaims = false;
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -89,11 +91,14 @@ public static class InfrastructureServiceCollectionExtensions
             });
 
         services.AddAuthorization();
+        services.AddHttpContextAccessor();
+
 
         services.AddSingleton<IOrderNumberGenerator, OrderNumberGenerator>();
         services.AddSingleton<TimeProvider>(TimeProvider.System);
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }
