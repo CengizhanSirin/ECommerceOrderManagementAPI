@@ -1,4 +1,5 @@
-﻿using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
+﻿using ECommerceOrderManagement.Application.Common.Abstractions.Authentication;
+using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
 using ECommerceOrderManagement.Application.Common.Messaging;
 using ECommerceOrderManagement.Application.Common.Results;
 using ECommerceOrderManagement.Application.Features.Catalog.Products;
@@ -8,7 +9,7 @@ using ECommerceOrderManagement.Domain.Orders;
 namespace ECommerceOrderManagement.Application.Features.Orders.CreateOrder;
 
 internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, IInventoryRepository inventoryRepository, IOrderRepository orderRepository,
-    IOrderNumberGenerator orderNumberGenerator, IUnitOfWork unitOfWork) : ICommandHandler<CreateOrderCommand, CreateOrderResponse>
+    IOrderNumberGenerator orderNumberGenerator, IUnitOfWork unitOfWork, ICurrentUser currentUser) : ICommandHandler<CreateOrderCommand, CreateOrderResponse>
 {
     public async Task<Result<CreateOrderResponse>> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
@@ -70,7 +71,7 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
             .ToArray();
 
         var order = Order.Create(
-            command.CustomerId,
+            currentUser.UserId,
             orderNumber,
             shippingAddress,
             billingAddress,

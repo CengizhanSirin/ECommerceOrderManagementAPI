@@ -2,10 +2,6 @@
 
 public static class OrderValidationErrors
 {
-
-    public const string CustomerIdRequiredCode = "Orders.CustomerIdRequired";
-    public const string CustomerIdRequiredMessage = "Customer id is required.";
-
     public const string ShippingAddressRequiredCode = "Orders.ShippingAddressRequired";
     public const string ShippingAddressRequiredMessage = "Shipping address is required.";
 
