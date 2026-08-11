@@ -13,4 +13,9 @@ public static class AuthenticationErrors
     {
         return Error.Unauthorized("Authentication.InvalidCredentials", "Invalid email or password.");
     }
+
+    public static Error InvalidRefreshToken()
+    {
+        return Error.Unauthorized("Authentication.InvalidRefreshToken", "Refresh token is invalid or expired.");
+    }
 }

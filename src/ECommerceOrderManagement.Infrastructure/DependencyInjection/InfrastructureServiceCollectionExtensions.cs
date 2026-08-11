@@ -90,6 +90,12 @@ public static class InfrastructureServiceCollectionExtensions
                 };
             });
 
+
+        services.AddOptions<RefreshTokenOptions>().Bind(configuration.GetSection(RefreshTokenOptions.SectionName))
+            .Validate(
+            options => options.ExpirationDays > 0, "Refresh token expiration must be greater than zero.")
+            .ValidateOnStart();
+
         services.AddAuthorization();
         services.AddHttpContextAccessor();
 
@@ -98,6 +104,8 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<TimeProvider>(TimeProvider.System);
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
+        services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;

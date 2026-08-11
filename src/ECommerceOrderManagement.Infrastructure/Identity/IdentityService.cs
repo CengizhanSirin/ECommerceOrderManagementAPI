@@ -82,4 +82,20 @@ internal sealed class IdentityService(UserManager<ApplicationUser> userManager, 
 
         return new IdentityUserCreationResult(true, user.Id, []);
     }
+
+    public async Task<IdentityUserInfo?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var user = await userManager.FindByIdAsync(userId.ToString());
+
+        if (user is null)
+        {
+            return null;
+        }
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        return new IdentityUserInfo(user.Id, user.Email!, user.IsActive, roles.ToArray());
+    }
 }

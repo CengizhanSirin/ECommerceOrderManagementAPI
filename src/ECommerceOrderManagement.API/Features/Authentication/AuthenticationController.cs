@@ -1,8 +1,10 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Authentication.Login;
+using ECommerceOrderManagement.API.Features.Authentication.Refresh;
 using ECommerceOrderManagement.API.Features.Authentication.Register;
 using ECommerceOrderManagement.Application.Features.Authentication.CurrentUser;
 using ECommerceOrderManagement.Application.Features.Authentication.Login;
+using ECommerceOrderManagement.Application.Features.Authentication.Refresh;
 using ECommerceOrderManagement.Application.Features.Authentication.Register;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -55,6 +57,21 @@ public sealed class AuthenticationController(ISender sender) : BaseApiController
     public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetCurrentUserQuery(), cancellationToken);
+
+        return HandleResult(result);
+    }
+
+
+
+    [HttpPost("refresh")]
+    [ProducesResponseType<RefreshResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequest request, CancellationToken cancellationToken)
+    {
+        var command = new RefreshCommand(request.RefreshToken);
+
+        var result = await sender.Send(command, cancellationToken);
 
         return HandleResult(result);
     }

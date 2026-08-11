@@ -5,7 +5,8 @@ using ECommerceOrderManagement.Application.Common.Results;
 
 namespace ECommerceOrderManagement.Application.Features.Authentication.Login;
 
-internal sealed class LoginCommandHandler(IIdentityService identityService, IAccessTokenGenerator accessTokenGenerator) : ICommandHandler<LoginCommand, LoginResponse>
+internal sealed class LoginCommandHandler(IIdentityService identityService, IAccessTokenGenerator accessTokenGenerator,
+    IRefreshTokenGenerator refreshTokenGenerator, IRefreshTokenStore refreshTokenStore) : ICommandHandler<LoginCommand, LoginResponse>
 {
     public async Task<Result<LoginResponse>> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
@@ -16,8 +17,14 @@ internal sealed class LoginCommandHandler(IIdentityService identityService, IAcc
             return Result<LoginResponse>.Failure(AuthenticationErrors.InvalidCredentials());
         }
 
-        var accessToken = accessTokenGenerator.Generate(authenticationResult.UserId!.Value, authenticationResult.Email!, authenticationResult.Roles);
+        var userId = authenticationResult.UserId!.Value;
 
-        return Result<LoginResponse>.Success(new LoginResponse(accessToken.Token, accessToken.ExpiresAtUtc));
+        var accessToken = accessTokenGenerator.Generate(userId, authenticationResult.Email!, authenticationResult.Roles);
+
+        var refreshToken = refreshTokenGenerator.Generate();
+
+        await refreshTokenStore.AddAsync(userId, refreshToken.TokenHash, refreshToken.ExpiresAtUtc, cancellationToken);
+
+        return Result<LoginResponse>.Success(new LoginResponse(accessToken.Token, accessToken.ExpiresAtUtc, refreshToken.Token, refreshToken.ExpiresAtUtc));
     }
 }

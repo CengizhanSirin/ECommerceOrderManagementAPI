@@ -43,4 +43,7 @@ public static class AuthenticationValidationErrors
 
     public const string PasswordsDoNotMatchCode = "Authentication.PasswordsDoNotMatch";
     public const string PasswordsDoNotMatchMessage = "Password and confirmation password do not match.";
+
+    public const string RefreshTokenRequiredCode = "Authentication.RefreshTokenRequired";
+    public const string RefreshTokenRequiredMessage = "Refresh token is required.";
 }
