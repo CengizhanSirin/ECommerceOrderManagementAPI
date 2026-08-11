@@ -17,6 +17,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\ECommerceOrderManagement.Application\ECommerceOrderManagement.Application.csproj" />
 	  <ProjectReference Include="..\..\src\ECommerceOrderManagement.Domain\ECommerceOrderManagement.Domain.csproj" />
+	  <ProjectReference Include="..\..\src\ECommerceOrderManagement.Infrastructure\ECommerceOrderManagement.Infrastructure.csproj" />
 	  <ProjectReference Include="..\..\src\ECommerceOrderManagement.Persistence\ECommerceOrderManagement.Persistence.csproj" />
 	</ItemGroup>
 

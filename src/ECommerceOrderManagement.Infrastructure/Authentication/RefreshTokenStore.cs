@@ -35,7 +35,7 @@ internal sealed class RefreshTokenStore(IdentityDbContext identityDbContext, Tim
 
     public async Task<bool> RevokeAsync(Guid refreshTokenId, Guid userId, DateTime revokedAtUtc, CancellationToken cancellationToken = default)
     {
-        var refreshToken = await identityDbContext.RefreshTokens.SingleAsync(
+        var refreshToken = await identityDbContext.RefreshTokens.SingleOrDefaultAsync(
             refreshToken =>
             refreshToken.Id == refreshTokenId &&
             refreshToken.UserId == userId &&
