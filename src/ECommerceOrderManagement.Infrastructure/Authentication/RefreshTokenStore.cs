@@ -33,13 +33,34 @@ internal sealed class RefreshTokenStore(IdentityDbContext identityDbContext, Tim
         .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task RevokeAsync(Guid refreshTokenId, DateTime revokedAtUtc, CancellationToken cancellationToken = default)
+    public async Task<bool> RevokeAsync(Guid refreshTokenId, Guid userId, DateTime revokedAtUtc, CancellationToken cancellationToken = default)
     {
-        var refreshToken = await identityDbContext.RefreshTokens.SingleAsync(refreshToken => refreshToken.Id == refreshTokenId, cancellationToken);
+        var refreshToken = await identityDbContext.RefreshTokens.SingleAsync(
+            refreshToken =>
+            refreshToken.Id == refreshTokenId &&
+            refreshToken.UserId == userId &&
+            refreshToken.RevokedAtUtc == null, cancellationToken);
+
+
+        if (refreshToken is null)
+        {
+            return false;
+        }
 
         refreshToken.Revoke(revokedAtUtc);
 
-        await identityDbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await identityDbContext.SaveChangesAsync(cancellationToken);
+
+            return true;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+
+            return false;
+        }
+
     }
 
     public async Task<bool> RotateAsync(Guid currentRefreshTokenId, Guid userId, string newTokenHash, DateTime newExpiresAtUtc, DateTime rotatedAtUtc, CancellationToken cancellationToken = default)

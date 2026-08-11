@@ -1,9 +1,11 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Authentication.Login;
+using ECommerceOrderManagement.API.Features.Authentication.Logout;
 using ECommerceOrderManagement.API.Features.Authentication.Refresh;
 using ECommerceOrderManagement.API.Features.Authentication.Register;
 using ECommerceOrderManagement.Application.Features.Authentication.CurrentUser;
 using ECommerceOrderManagement.Application.Features.Authentication.Login;
+using ECommerceOrderManagement.Application.Features.Authentication.Logout;
 using ECommerceOrderManagement.Application.Features.Authentication.Refresh;
 using ECommerceOrderManagement.Application.Features.Authentication.Register;
 using MediatR;
@@ -74,5 +76,19 @@ public sealed class AuthenticationController(ISender sender) : BaseApiController
         var result = await sender.Send(command, cancellationToken);
 
         return HandleResult(result);
+    }
+
+
+
+    [HttpPost("logout")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Logout([FromBody] LogoutRequest request, CancellationToken cancellationToken)
+    {
+        var command = new LogoutCommand(request.RefreshToken);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
     }
 }
