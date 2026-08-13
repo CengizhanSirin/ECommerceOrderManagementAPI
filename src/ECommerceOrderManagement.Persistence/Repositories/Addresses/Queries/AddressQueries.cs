@@ -1,0 +1,48 @@
+﻿using ECommerceOrderManagement.Application.Features.Addresses;
+using ECommerceOrderManagement.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
+
+namespace ECommerceOrderManagement.Persistence.Repositories.Addresses.Queries;
+
+internal sealed class AddressQueries(ApplicationDbContext dbContext) : IAddressQueries
+{
+    public async Task<AddressReadModel?> GetByIdAsync(Guid addressId, Guid userId, CancellationToken cancellationToken = default)
+    {
+       return await dbContext.Addresses
+           .AsNoTracking()
+           .Where(address => address.Id == addressId && address.UserId == userId)
+           .Select(address => new AddressReadModel(
+               address.Id,
+               address.Title,
+               address.FullName,
+               address.PhoneNumber,
+               address.Country,
+               address.City,
+               address.District,
+               address.PostalCode,
+               address.AddressLine,
+               address.IsDefault))
+           .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<AddressReadModel>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Addresses
+           .AsNoTracking()
+           .Where(address => address.UserId == userId)
+           .OrderByDescending(address => address.IsDefault)
+           .ThenBy(address => address.Title)
+           .Select(address => new AddressReadModel(
+               address.Id,
+               address.Title,
+               address.FullName,
+               address.PhoneNumber,
+               address.Country,
+               address.City,
+               address.District,
+               address.PostalCode,
+               address.AddressLine,
+               address.IsDefault))
+           .ToArrayAsync(cancellationToken);
+    }
+}

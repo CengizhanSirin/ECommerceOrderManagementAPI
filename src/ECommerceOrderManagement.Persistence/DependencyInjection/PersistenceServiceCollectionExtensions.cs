@@ -1,4 +1,5 @@
 ﻿using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
+using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories;
 using ECommerceOrderManagement.Application.Features.Catalog.Products;
@@ -6,6 +7,8 @@ using ECommerceOrderManagement.Application.Features.Inventory;
 using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Persistence.Contexts;
 using ECommerceOrderManagement.Persistence.Interceptors;
+using ECommerceOrderManagement.Persistence.Repositories.Addresses;
+using ECommerceOrderManagement.Persistence.Repositories.Addresses.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Inventory;
@@ -33,13 +36,14 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IBrandRepository, BrandRepository>();
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
-
+        services.AddScoped<IAddressRepository, AddressRepository>();
 
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();
         services.AddScoped<IBrandQueries, BrandQueries>();
         services.AddScoped<IInventoryQueries, InventoryQueries>();
         services.AddScoped<IOrderQueries, OrderQueries>();
+        services.AddScoped<IAddressQueries, AddressQueries>();
 
         services.AddScoped<IUnitOfWork, ECommerceOrderManagement.Persistence.UnitOfWork.UnitOfWork>();
 
