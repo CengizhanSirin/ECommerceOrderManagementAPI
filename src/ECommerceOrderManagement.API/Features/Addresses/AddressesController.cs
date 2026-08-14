@@ -1,7 +1,9 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Addresses.CreateAddress;
 using ECommerceOrderManagement.Application.Common.Authorization;
+using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Addresses.CreateAddress;
+using ECommerceOrderManagement.Application.Features.Addresses.GetAddressById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,5 +41,22 @@ public sealed class AddressesController(ISender sender) : BaseApiController
                 Id = addressId
             },
             response => $"/api/addresses/{response.Id}");
+    }
+
+
+
+    [HttpGet("{addressId:guid}")]
+    [ProducesResponseType<AddressReadModel>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAddressById([FromRoute] Guid addressId, CancellationToken cancellationToken)
+    {
+        var query = new GetAddressByIdQuery(addressId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 }

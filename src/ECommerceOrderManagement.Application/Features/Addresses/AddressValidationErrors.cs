@@ -2,6 +2,9 @@
 
 public static class AddressValidationErrors
 {
+    public const string AddressIdRequiredCode = "Address.Id.Required";
+    public const string AddressIdRequiredMessage = "Address ID is required.";
+
     public const string TitleRequiredCode = "Address.Title.Required";
     public const string TitleRequiredMessage = "Address title is required.";
 
