@@ -7,6 +7,7 @@ using ECommerceOrderManagement.Application.Features.Addresses.CreateAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.DeleteAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddressById;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddresses;
+using ECommerceOrderManagement.Application.Features.Addresses.SetDefaultBillingAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.SetDefaultShippingAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.UpdateAddress;
 using MediatR;
@@ -125,6 +126,23 @@ public sealed class AddressesController(ISender sender) : BaseApiController
     public async Task<IActionResult> SetDefaultShippingAddress([FromRoute] Guid addressId, CancellationToken cancellationToken)
     {
         var command = new SetDefaultShippingAddressCommand(addressId);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+
+
+    [HttpPut("{addressId:guid}/default-billing")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SetDefaultBillingAddress([FromRoute] Guid addressId, CancellationToken cancellationToken)
+    {
+        var command = new SetDefaultBillingAddressCommand(addressId);
 
         var result = await sender.Send(command, cancellationToken);
 
