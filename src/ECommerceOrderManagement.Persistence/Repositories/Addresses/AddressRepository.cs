@@ -12,6 +12,13 @@ internal sealed class AddressRepository(ApplicationDbContext dbContext) : Reposi
         return await DbSet.AnyAsync(address => address.UserId == userId, cancellationToken);
     }
 
+    public async Task<Address?> GetAnotherByUserIdAsync(Guid userId, Guid excludedAddressId, CancellationToken cancellationToken = default)
+    {
+        return await DbSet.Where(address => address.UserId == userId && address.Id != excludedAddressId)
+            .OrderBy(address => address.CreatedAtUtc)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<Address?> GetByIdAndUserIdAsync(Guid addressId, Guid userId, CancellationToken cancellationToken = default)
     {
         return await DbSet.SingleOrDefaultAsync(address => address.Id == addressId && address.UserId == userId, cancellationToken);

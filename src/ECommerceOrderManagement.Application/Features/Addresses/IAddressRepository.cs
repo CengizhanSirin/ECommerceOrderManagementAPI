@@ -10,4 +10,6 @@ public interface IAddressRepository : IRepository<Address>
     Task<Address?> GetDefaultByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsForUserAsync(Guid userId, CancellationToken cancellationToken = default);
+
+    Task<Address?> GetAnotherByUserIdAsync(Guid userId, Guid excludedAddressId, CancellationToken cancellationToken = default);
 }

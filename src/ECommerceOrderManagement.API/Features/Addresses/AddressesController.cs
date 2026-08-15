@@ -4,6 +4,7 @@ using ECommerceOrderManagement.API.Features.Addresses.UpdateAddress;
 using ECommerceOrderManagement.Application.Common.Authorization;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Addresses.CreateAddress;
+using ECommerceOrderManagement.Application.Features.Addresses.DeleteAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddressById;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddresses;
 using ECommerceOrderManagement.Application.Features.Addresses.UpdateAddress;
@@ -90,6 +91,23 @@ public sealed class AddressesController(ISender sender) : BaseApiController
     {
         var command = new UpdateAddressCommand(addressId, request.Title, request.FullName, request.PhoneNumber, request.Country,
             request.City, request.District, request.PostalCode, request.AddressLine);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+
+
+    [HttpDelete("{addressId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteAddress([FromRoute] Guid addressId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteAddressCommand(addressId);
 
         var result = await sender.Send(command, cancellationToken);
 
