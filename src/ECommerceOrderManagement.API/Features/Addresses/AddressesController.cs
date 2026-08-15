@@ -4,6 +4,7 @@ using ECommerceOrderManagement.Application.Common.Authorization;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Addresses.CreateAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddressById;
+using ECommerceOrderManagement.Application.Features.Addresses.GetAddresses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,21 @@ public sealed class AddressesController(ISender sender) : BaseApiController
     public async Task<IActionResult> GetAddressById([FromRoute] Guid addressId, CancellationToken cancellationToken)
     {
         var query = new GetAddressByIdQuery(addressId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
+    }
+
+
+
+    [HttpGet]
+    [ProducesResponseType<IReadOnlyCollection<AddressReadModel>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetAddresses(CancellationToken cancellationToken)
+    {
+        var query = new GetAddressesQuery();
 
         var result = await sender.Send(query, cancellationToken);
 
