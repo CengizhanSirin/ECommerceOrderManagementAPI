@@ -8,21 +8,20 @@ internal sealed class AddressQueries(ApplicationDbContext dbContext) : IAddressQ
 {
     public async Task<AddressReadModel?> GetByIdAsync(Guid addressId, Guid userId, CancellationToken cancellationToken = default)
     {
-       return await dbContext.Addresses
-           .AsNoTracking()
-           .Where(address => address.Id == addressId && address.UserId == userId)
-           .Select(address => new AddressReadModel(
-               address.Id,
-               address.Title,
-               address.FullName,
-               address.PhoneNumber,
-               address.Country,
-               address.City,
-               address.District,
-               address.PostalCode,
-               address.AddressLine,
-               address.IsDefault))
-           .SingleOrDefaultAsync(cancellationToken);
+        return await dbContext.Addresses
+            .AsNoTracking()
+            .Where(address => address.Id == addressId && address.UserId == userId)
+            .Select(address => new AddressReadModel(
+                address.Id,
+                address.Title,
+                address.FullName,
+                address.PhoneNumber,
+                address.Country,
+                address.City,
+                address.District,
+                address.PostalCode,
+                address.AddressLine))
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<AddressReadModel>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
@@ -30,8 +29,7 @@ internal sealed class AddressQueries(ApplicationDbContext dbContext) : IAddressQ
         return await dbContext.Addresses
            .AsNoTracking()
            .Where(address => address.UserId == userId)
-           .OrderByDescending(address => address.IsDefault)
-           .ThenBy(address => address.Title)
+           .OrderBy(address => address.Title)
            .Select(address => new AddressReadModel(
                address.Id,
                address.Title,
@@ -41,8 +39,7 @@ internal sealed class AddressQueries(ApplicationDbContext dbContext) : IAddressQ
                address.City,
                address.District,
                address.PostalCode,
-               address.AddressLine,
-               address.IsDefault))
+               address.AddressLine))
            .ToArrayAsync(cancellationToken);
     }
 }

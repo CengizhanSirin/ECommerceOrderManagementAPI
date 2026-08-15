@@ -11,21 +11,8 @@ internal sealed class CreateAddressCommandHandler(IAddressRepository addressRepo
 {
     public async Task<Result<Guid>> Handle(CreateAddressCommand command, CancellationToken cancellationToken)
     {
-        var userId = currentUser.UserId;
-
-        var hasAnyAddress = await addressRepository.ExistsForUserAsync(userId, cancellationToken);
-
-        var shouldBeDefault = !hasAnyAddress || command.IsDefault;
-
-        if (hasAnyAddress && command.IsDefault)
-        {
-            var currentDefaultAddress = await addressRepository.GetDefaultByUserIdAsync(userId, cancellationToken);
-
-            currentDefaultAddress?.RemoveAsDefault();
-        }
-
         var address = Address.Create(
-            userId,
+            currentUser.UserId,
             command.Title,
             command.FullName,
             command.PhoneNumber,
@@ -33,8 +20,8 @@ internal sealed class CreateAddressCommandHandler(IAddressRepository addressRepo
             command.City,
             command.District,
             command.PostalCode,
-            command.AddressLine,
-            shouldBeDefault);
+            command.AddressLine);
+
 
         await addressRepository.AddAsync(address, cancellationToken);
 

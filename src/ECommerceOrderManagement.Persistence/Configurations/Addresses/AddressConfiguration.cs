@@ -48,14 +48,7 @@ internal sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
             .HasMaxLength(500)
             .IsRequired();
 
-        builder.Property(address => address.IsDefault)
-            .IsRequired();
-
         builder.HasIndex(address => address.UserId, "IX_Addresses_UserId");
-
-        builder.HasIndex(address => address.UserId, "UX_Addresses_UserId_Default_NotDeleted")
-            .IsUnique()
-            .HasFilter("[IsDefault] = 1 AND [IsDeleted] = 0");
 
         builder.HasQueryFilter(address => !address.IsDeleted);
     }

@@ -7,7 +7,6 @@ using ECommerceOrderManagement.Application.Features.Addresses.CreateAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.DeleteAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddressById;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddresses;
-using ECommerceOrderManagement.Application.Features.Addresses.SetDefaultAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.UpdateAddress;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -35,8 +34,7 @@ public sealed class AddressesController(ISender sender) : BaseApiController
             request.City,
             request.District,
             request.PostalCode,
-            request.AddressLine,
-            request.IsDefault);
+            request.AddressLine);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -109,23 +107,6 @@ public sealed class AddressesController(ISender sender) : BaseApiController
     public async Task<IActionResult> DeleteAddress([FromRoute] Guid addressId, CancellationToken cancellationToken)
     {
         var command = new DeleteAddressCommand(addressId);
-
-        var result = await sender.Send(command, cancellationToken);
-
-        return HandleNoContent(result);
-    }
-
-
-
-    [HttpPut("{addressId:guid}/default")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> SetDefaultAddress([FromRoute] Guid addressId, CancellationToken cancellationToken)
-    {
-        var command = new SetDefaultAddressCommand(addressId);
 
         var result = await sender.Send(command, cancellationToken);
 

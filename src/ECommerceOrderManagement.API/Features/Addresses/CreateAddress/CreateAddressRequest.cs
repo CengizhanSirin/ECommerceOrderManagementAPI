@@ -17,6 +17,4 @@ public sealed class CreateAddressRequest
     public string PostalCode { get; init; } = string.Empty;
 
     public string AddressLine { get; init; } = string.Empty;
-
-    public bool IsDefault { get; init; }
 }

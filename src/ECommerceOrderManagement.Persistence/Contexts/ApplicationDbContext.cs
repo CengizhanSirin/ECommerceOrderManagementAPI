@@ -20,6 +20,7 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<Address> Addresses => Set<Address>();
+    public DbSet<UserAddressPreference> UserAddressPreferences => Set<UserAddressPreference>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

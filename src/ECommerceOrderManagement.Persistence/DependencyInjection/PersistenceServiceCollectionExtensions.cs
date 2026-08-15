@@ -37,6 +37,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
+        services.AddScoped<IUserAddressPreferenceRepository, UserAddressPreferenceRepository>();
 
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();

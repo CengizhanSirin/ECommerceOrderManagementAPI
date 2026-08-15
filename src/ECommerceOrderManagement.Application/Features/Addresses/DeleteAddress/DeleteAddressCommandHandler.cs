@@ -5,7 +5,8 @@ using ECommerceOrderManagement.Application.Common.Results;
 
 namespace ECommerceOrderManagement.Application.Features.Addresses.DeleteAddress;
 
-internal sealed class DeleteAddressCommandHandler(IAddressRepository addressRepository, IUnitOfWork unitOfWork, ICurrentUser currentUser, TimeProvider timeProvider)
+internal sealed class DeleteAddressCommandHandler(IAddressRepository addressRepository, IUserAddressPreferenceRepository userAddressPreferenceRepository, IUnitOfWork unitOfWork,
+    ICurrentUser currentUser, TimeProvider timeProvider)
     : ICommandHandler<DeleteAddressCommand>
 {
     public async Task<Result> Handle(DeleteAddressCommand command, CancellationToken cancellationToken)
@@ -17,12 +18,9 @@ internal sealed class DeleteAddressCommandHandler(IAddressRepository addressRepo
             return Result.Failure(AddressErrors.NotFound(command.AddressId));
         }
 
-        if (address.IsDefault)
-        {
-            var replacementAddress = await addressRepository.GetAnotherByUserIdAsync(currentUser.UserId, address.Id, cancellationToken);
+        var preference = await userAddressPreferenceRepository.GetByUserIdAsync(currentUser.UserId, cancellationToken);
 
-            replacementAddress?.SetAsDefault();
-        }
+        preference?.ClearAddress(address.Id);
 
         var utcNow = timeProvider.GetUtcNow().UtcDateTime;
 
