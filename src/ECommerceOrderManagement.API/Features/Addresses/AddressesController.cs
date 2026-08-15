@@ -1,10 +1,12 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Addresses.CreateAddress;
+using ECommerceOrderManagement.API.Features.Addresses.UpdateAddress;
 using ECommerceOrderManagement.Application.Common.Authorization;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Addresses.CreateAddress;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddressById;
 using ECommerceOrderManagement.Application.Features.Addresses.GetAddresses;
+using ECommerceOrderManagement.Application.Features.Addresses.UpdateAddress;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -74,5 +76,23 @@ public sealed class AddressesController(ISender sender) : BaseApiController
         var result = await sender.Send(query, cancellationToken);
 
         return HandleResult(result);
+    }
+
+
+
+    [HttpPut("{addressId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAddress([FromRoute] Guid addressId, [FromBody] UpdateAddressRequest request, CancellationToken cancellationToken)
+    {
+        var command = new UpdateAddressCommand(addressId, request.Title, request.FullName, request.PhoneNumber, request.Country,
+            request.City, request.District, request.PostalCode, request.AddressLine);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
     }
 }
