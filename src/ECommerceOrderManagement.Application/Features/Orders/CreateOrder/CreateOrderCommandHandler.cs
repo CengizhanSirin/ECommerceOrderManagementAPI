@@ -23,6 +23,13 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
             return Result<CreateOrderResponse>.Failure(AddressErrors.NotFound(command.ShippingAddressId));
         }
 
+        var billingAddressEntity = await addressRepository.GetByIdAndUserIdAsync(command.BillingAddressId, currentUser.UserId, cancellationToken);
+
+        if (billingAddressEntity is null)
+        {
+            return Result<CreateOrderResponse>.Failure(AddressErrors.NotFound(command.BillingAddressId));
+        }
+
         var productIds = command.Items.Select(item => item.ProductId).ToArray();
 
         var products = await productQueries.GetActiveOrderSnapshotsByIdsAsync(productIds, cancellationToken);
@@ -64,7 +71,7 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
 
         var shippingAddress = CreateOrderAddress(shippingAddressEntity);
 
-        var billingAddress = CreateOrderAddress(command.BillingAddress);
+        var billingAddress = CreateOrderAddress(billingAddressEntity);
 
         var itemSnapshots = command.Items.Select(requestedItem =>
             {
@@ -98,18 +105,6 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<CreateOrderResponse>.Success(new CreateOrderResponse(order.Id, order.OrderNumber));
-    }
-
-    private static OrderAddress CreateOrderAddress(CreateOrderAddress address)
-    {
-        return OrderAddress.Create(
-            address.FullName,
-            address.PhoneNumber,
-            address.Country,
-            address.City,
-            address.District,
-            address.PostalCode,
-            address.AddressLine);
     }
 
     private static OrderAddress CreateOrderAddress(Address address)
