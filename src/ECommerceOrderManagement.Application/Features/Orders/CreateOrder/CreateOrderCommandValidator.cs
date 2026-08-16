@@ -6,17 +6,15 @@ public sealed class CreateOrderCommandValidator : AbstractValidator<CreateOrderC
 {
     public CreateOrderCommandValidator()
     {
-        RuleFor(command => command.ShippingAddress)
-            .NotNull()
+        RuleFor(command => command.ShippingAddressId)
+            .NotEmpty()
             .WithErrorCode(OrderValidationErrors.ShippingAddressRequiredCode)
-            .WithMessage(OrderValidationErrors.ShippingAddressRequiredMessage)
-            .SetValidator(new CreateOrderAddressValidator());
+            .WithMessage(OrderValidationErrors.ShippingAddressRequiredMessage);
 
-        RuleFor(command => command.BillingAddress)
-            .NotNull()
+        RuleFor(command => command.BillingAddressId)
+            .NotEmpty()
             .WithErrorCode(OrderValidationErrors.BillingAddressRequiredCode)
-            .WithMessage(OrderValidationErrors.BillingAddressRequiredMessage)
-            .SetValidator(new CreateOrderAddressValidator());
+            .WithMessage(OrderValidationErrors.BillingAddressRequiredMessage);
 
         RuleFor(command => command.Items)
             .NotEmpty()

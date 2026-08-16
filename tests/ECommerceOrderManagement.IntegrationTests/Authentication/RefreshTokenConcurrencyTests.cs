@@ -75,9 +75,9 @@ public sealed class RefreshTokenConcurrencyTests
 
             var results = await Task.WhenAll(rotationTaskA, rotationTaskB);
 
-            Assert.Single(results.Where(result => result));
+            Assert.Single(results, result => result);
 
-            Assert.Single(results.Where(result => !result));
+            Assert.Single(results, result => !result);
 
             await using var verificationContext = new IdentityDbContext(baseOptions);
 
@@ -88,11 +88,11 @@ public sealed class RefreshTokenConcurrencyTests
 
             Assert.Equal(2, persistedTokens.Count);
 
-            var persistedCurrentToken = Assert.Single(persistedTokens.Where(refreshToken => refreshToken.Id == currentRefreshTokenId));
+            var persistedCurrentToken = Assert.Single(persistedTokens, refreshToken => refreshToken.Id == currentRefreshTokenId);
 
             Assert.NotNull(persistedCurrentToken.RevokedAtUtc);
 
-            var activeToken = Assert.Single(persistedTokens.Where(refreshToken => refreshToken.RevokedAtUtc is null));
+            var activeToken = Assert.Single(persistedTokens, refreshToken => refreshToken.RevokedAtUtc is null);
 
             var expectedActiveTokenHash = results[0]
                     ? newTokenHashA
