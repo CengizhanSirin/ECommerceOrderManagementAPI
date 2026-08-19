@@ -1,0 +1,3 @@
+﻿namespace ECommerceOrderManagement.API.Features.ShoppingCarts.UpdateShoppingCartItem;
+
+public sealed record UpdateShoppingCartItemRequest(int Quantity);
