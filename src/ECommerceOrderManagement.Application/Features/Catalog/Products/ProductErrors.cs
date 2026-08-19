@@ -18,4 +18,9 @@ public static class ProductErrors
     {
         return Error.NotFound("Product.NotFound", $"Product with ID '{productId}' was not found.");
     }
+
+    public static Error Inactive(Guid productId)
+    {
+        return Error.Failure("Product.Inactive", $"Product with ID '{productId}' is inactive.");
+    }
 }
