@@ -4,6 +4,7 @@ using ECommerceOrderManagement.API.Features.ShoppingCarts.UpdateShoppingCartItem
 using ECommerceOrderManagement.Application.Common.Authorization;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts.AddShoppingCartItem;
+using ECommerceOrderManagement.Application.Features.ShoppingCarts.DeleteShoppingCartItem;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts.GetShoppingCart;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts.UpdateShoppingCartItem;
 using MediatR;
@@ -60,6 +61,23 @@ public sealed class ShoppingCartsController(ISender sender) : BaseApiController
     public async Task<IActionResult> UpdateItem([FromRoute] Guid productId, [FromBody] UpdateShoppingCartItemRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateShoppingCartItemCommand(productId, request.Quantity);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+
+
+    [HttpDelete("items/{productId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteItem([FromRoute] Guid productId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteShoppingCartItemCommand(productId);
 
         var result = await sender.Send(command, cancellationToken);
 
