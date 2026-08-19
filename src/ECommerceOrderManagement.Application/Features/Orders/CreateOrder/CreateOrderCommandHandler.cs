@@ -5,13 +5,15 @@ using ECommerceOrderManagement.Application.Common.Results;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Catalog.Products;
 using ECommerceOrderManagement.Application.Features.Inventory;
+using ECommerceOrderManagement.Application.Features.ShoppingCarts;
 using ECommerceOrderManagement.Domain.Addresses;
 using ECommerceOrderManagement.Domain.Orders;
 
 namespace ECommerceOrderManagement.Application.Features.Orders.CreateOrder;
 
 internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, IInventoryRepository inventoryRepository, IOrderRepository orderRepository,
-    IOrderNumberGenerator orderNumberGenerator, IUnitOfWork unitOfWork, ICurrentUser currentUser, IAddressRepository addressRepository)
+    IOrderNumberGenerator orderNumberGenerator, IUnitOfWork unitOfWork, ICurrentUser currentUser,
+    IAddressRepository addressRepository, IShoppingCartRepository shoppingCartRepository)
     : ICommandHandler<CreateOrderCommand, CreateOrderResponse>
 {
     public async Task<Result<CreateOrderResponse>> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
@@ -30,7 +32,14 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
             return Result<CreateOrderResponse>.Failure(AddressErrors.NotFound(command.BillingAddressId));
         }
 
-        var productIds = command.Items.Select(item => item.ProductId).ToArray();
+        var shoppingCart = await shoppingCartRepository.GetByUserIdAsync(currentUser.UserId, cancellationToken);
+
+        if (shoppingCart is null || shoppingCart.Items.Count == 0)
+        {
+            return Result<CreateOrderResponse>.Failure(ShoppingCartErrors.Empty());
+        }
+
+        var productIds = shoppingCart.Items.Select(item => item.ProductId).ToArray();
 
         var products = await productQueries.GetActiveOrderSnapshotsByIdsAsync(productIds, cancellationToken);
 
@@ -48,16 +57,16 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
 
         var inventoryItemsByProductId = inventoryItems.ToDictionary(inventoryItem => inventoryItem.ProductId);
 
-        foreach (var requestedItem in command.Items)
+        foreach (var cartItem in shoppingCart.Items)
         {
-            if (!inventoryItemsByProductId.TryGetValue(requestedItem.ProductId, out var inventoryItem))
+            if (!inventoryItemsByProductId.TryGetValue(cartItem.ProductId, out var inventoryItem))
             {
-                return Result<CreateOrderResponse>.Failure(OrderErrors.InventoryNotFound(requestedItem.ProductId));
+                return Result<CreateOrderResponse>.Failure(OrderErrors.InventoryNotFound(cartItem.ProductId));
             }
 
-            if (inventoryItem.AvailableQuantity < requestedItem.Quantity)
+            if (inventoryItem.AvailableQuantity < cartItem.Quantity)
             {
-                return Result<CreateOrderResponse>.Failure(OrderErrors.InsufficientStock(requestedItem.ProductId));
+                return Result<CreateOrderResponse>.Failure(OrderErrors.InsufficientStock(cartItem.ProductId));
 
             }
         }
@@ -73,16 +82,16 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
 
         var billingAddress = CreateOrderAddress(billingAddressEntity);
 
-        var itemSnapshots = command.Items.Select(requestedItem =>
+        var itemSnapshots = shoppingCart.Items.Select(cartItem =>
             {
-                var product = productsById[requestedItem.ProductId];
+                var product = productsById[cartItem.ProductId];
 
                 return new OrderItemSnapshot(
                     product.ProductId,
                     product.Name,
                     product.Sku,
                     product.UnitPrice,
-                    requestedItem.Quantity);
+                    cartItem.Quantity);
             })
             .ToArray();
 
@@ -93,14 +102,16 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
             billingAddress,
             itemSnapshots);
 
-        foreach (var requestedItem in command.Items)
+        foreach (var cartItem in shoppingCart.Items)
         {
-            var inventoryItem = inventoryItemsByProductId[requestedItem.ProductId];
+            var inventoryItem = inventoryItemsByProductId[cartItem.ProductId];
 
-            inventoryItem.ReserveStock(requestedItem.Quantity, $"Reserved for order {orderNumber}.");
+            inventoryItem.ReserveStock(cartItem.Quantity, $"Reserved for order {orderNumber}.");
         }
 
         await orderRepository.AddAsync(order, cancellationToken);
+
+        shoppingCart.Clear();
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

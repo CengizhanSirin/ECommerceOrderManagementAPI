@@ -2,6 +2,7 @@
 using ECommerceOrderManagement.Domain.Catalog;
 using ECommerceOrderManagement.Domain.Inventory;
 using ECommerceOrderManagement.Domain.Orders;
+using ECommerceOrderManagement.Domain.ShoppingCarts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceOrderManagement.Persistence.Contexts;
@@ -21,6 +22,8 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<Address> Addresses => Set<Address>();
     public DbSet<UserAddressPreference> UserAddressPreferences => Set<UserAddressPreference>();
+    public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
+    public DbSet<ShoppingCartItem> ShoppingCartItems => Set<ShoppingCartItem>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
