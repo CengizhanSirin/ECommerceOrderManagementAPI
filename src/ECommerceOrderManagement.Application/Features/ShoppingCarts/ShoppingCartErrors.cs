@@ -13,4 +13,9 @@ public static class ShoppingCartErrors
     {
         return Error.Conflict("ShoppingCart.MaximumItemLimitReached", "The shopping cart cannot contain more than 50 different products.");
     }
+
+    public static Error Empty()
+    {
+        return Error.Conflict("ShoppingCart.Empty", "An order cannot be created from an empty shopping cart.");
+    }
 }

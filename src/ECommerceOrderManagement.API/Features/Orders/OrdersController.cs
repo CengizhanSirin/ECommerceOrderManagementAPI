@@ -30,7 +30,7 @@ public sealed class OrdersController(ISender sender) : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
     {
-        var command = new CreateOrderCommand(request.ShippingAddressId, request.BillingAddressId, request.Items.Select(MapItem).ToArray());
+        var command = new CreateOrderCommand(request.ShippingAddressId, request.BillingAddressId);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -135,9 +135,5 @@ public sealed class OrdersController(ISender sender) : BaseApiController
         var result = await sender.Send(command, cancellationToken);
 
         return HandleNoContent(result);
-    }
-    private static CreateOrderItem MapItem(CreateOrderItemRequest item)
-    {
-        return new CreateOrderItem(item.ProductId, item.Quantity);
     }
 }
