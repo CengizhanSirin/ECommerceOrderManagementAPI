@@ -20,8 +20,4 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Repositories\ShoppingCarts\Queries\" />
-	</ItemGroup>
-
 </Project>

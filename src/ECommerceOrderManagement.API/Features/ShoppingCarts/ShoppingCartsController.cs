@@ -1,7 +1,9 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.ShoppingCarts.AddShoppingCartItem;
 using ECommerceOrderManagement.Application.Common.Authorization;
+using ECommerceOrderManagement.Application.Features.ShoppingCarts;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts.AddShoppingCartItem;
+using ECommerceOrderManagement.Application.Features.ShoppingCarts.GetShoppingCart;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +29,21 @@ public sealed class ShoppingCartsController(ISender sender) : BaseApiController
         var result = await sender.Send(command, cancellationToken);
 
         return HandleNoContent(result);
+    }
+
+
+
+    [HttpGet]
+    [ProducesResponseType<ShoppingCartReadModel>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetShoppingCart(CancellationToken cancellationToken)
+    {
+        var query = new GetShoppingCartQuery();
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
     }
 
 }

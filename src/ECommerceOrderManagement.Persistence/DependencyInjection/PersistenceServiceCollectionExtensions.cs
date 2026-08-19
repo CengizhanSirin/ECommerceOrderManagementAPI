@@ -17,6 +17,7 @@ using ECommerceOrderManagement.Persistence.Repositories.Inventory.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Orders;
 using ECommerceOrderManagement.Persistence.Repositories.Orders.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.ShoppingCarts;
+using ECommerceOrderManagement.Persistence.Repositories.ShoppingCarts.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IUserAddressPreferenceRepository, UserAddressPreferenceRepository>();
-        services.AddScoped<IShoppingCartRepository,ShoppingCartRepository>();
+        services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();
@@ -48,6 +49,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IInventoryQueries, InventoryQueries>();
         services.AddScoped<IOrderQueries, OrderQueries>();
         services.AddScoped<IAddressQueries, AddressQueries>();
+        services.AddScoped<IShoppingCartQueries, ShoppingCartQueries>();
 
         services.AddScoped<IUnitOfWork, ECommerceOrderManagement.Persistence.UnitOfWork.UnitOfWork>();
 
