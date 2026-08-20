@@ -1,4 +1,5 @@
-﻿using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
+﻿using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
+using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories;
@@ -16,6 +17,7 @@ using ECommerceOrderManagement.Persistence.Repositories.Inventory;
 using ECommerceOrderManagement.Persistence.Repositories.Inventory.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Orders;
 using ECommerceOrderManagement.Persistence.Repositories.Orders.Queries;
+using ECommerceOrderManagement.Persistence.Repositories.Payments;
 using ECommerceOrderManagement.Persistence.Repositories.ShoppingCarts;
 using ECommerceOrderManagement.Persistence.Repositories.ShoppingCarts.Queries;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +44,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IUserAddressPreferenceRepository, UserAddressPreferenceRepository>();
         services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
 
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();
