@@ -6,7 +6,7 @@ using ECommerceOrderManagement.Infrastructure.Authentication;
 using ECommerceOrderManagement.Infrastructure.Contexts;
 using ECommerceOrderManagement.Infrastructure.Identity;
 using ECommerceOrderManagement.Infrastructure.Orders;
-using ECommerceOrderManagement.Infrastructure.Payments;
+using ECommerceOrderManagement.Infrastructure.Payments.Iyzico;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -101,6 +101,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddAuthorization();
         services.AddHttpContextAccessor();
 
+        services.Configure<IyzicoOptions>(configuration.GetSection(IyzicoOptions.SectionName));
 
         services.AddSingleton<IOrderNumberGenerator, OrderNumberGenerator>();
         services.AddSingleton<TimeProvider>(TimeProvider.System);
@@ -109,7 +110,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
         services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
         services.AddScoped<ICurrentUser, CurrentUser>();
-        services.AddScoped<IPaymentService, FakePaymentService>();
+        services.AddScoped<IPaymentService, IyzicoPaymentService>();
 
         return services;
     }
