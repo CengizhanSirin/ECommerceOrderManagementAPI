@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceOrderManagement.API.Features.Orders;
 
+
 [Route("api/orders")]
 public sealed class OrdersController(ISender sender) : BaseApiController
 {
@@ -53,7 +54,7 @@ public sealed class OrdersController(ISender sender) : BaseApiController
     }
 
 
-
+    [Authorize(Roles = ApplicationRoles.Customer)]
     [HttpGet]
     [ProducesResponseType<PagedResult<GetOrdersItemResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -63,7 +64,6 @@ public sealed class OrdersController(ISender sender) : BaseApiController
             request.PageNumber,
             request.PageSize,
             request.SearchTerm,
-            request.CustomerId,
             request.Status,
             request.SortBy,
             request.SortDirection);

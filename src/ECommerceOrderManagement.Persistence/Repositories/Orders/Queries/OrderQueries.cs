@@ -55,20 +55,15 @@ internal sealed class OrderQueries(ApplicationDbContext dbContext) : IOrderQueri
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<GetOrdersItemResponse>> GetPagedAsync(GetOrdersQuery query, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<GetOrdersItemResponse>> GetPagedAsync(GetOrdersQuery query, Guid customerId, CancellationToken cancellationToken = default)
     {
-        IQueryable<Order> ordersQuery = dbContext.Orders.AsNoTracking();
+        IQueryable<Order> ordersQuery = dbContext.Orders.AsNoTracking().Where(order => order.CustomerId == customerId); 
 
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
             var searchTerm = query.SearchTerm.Trim();
 
             ordersQuery = ordersQuery.Where(order => order.OrderNumber.Contains(searchTerm));
-        }
-
-        if (query.CustomerId.HasValue)
-        {
-            ordersQuery = ordersQuery.Where(order => order.CustomerId == query.CustomerId.Value);
         }
 
         if (query.Status.HasValue)

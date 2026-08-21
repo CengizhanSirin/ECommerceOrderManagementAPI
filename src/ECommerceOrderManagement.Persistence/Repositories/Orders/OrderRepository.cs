@@ -16,4 +16,10 @@ internal sealed class OrderRepository(ApplicationDbContext dbContext) : Reposito
     {
         return DbSet.AnyAsync(order => order.OrderNumber == orderNumber, cancellationToken);
     }
+
+    public Task<Order?> GetByIdAndCustomerIdWithItemsAsync(Guid orderId, Guid customerId, CancellationToken cancellationToken = default)
+    {
+        return DbSet.Include(order => order.Items).SingleOrDefaultAsync(
+            order => order.Id == orderId && order.CustomerId == customerId, cancellationToken);
+    }
 }

@@ -77,9 +77,6 @@ public static class OrderValidationErrors
     public const string SearchTermTooLongCode = "Orders.SearchTermTooLong";
     public const string SearchTermTooLongMessage = "Search term cannot exceed 50 characters.";
 
-    public const string CustomerIdInvalidCode = "Orders.CustomerIdInvalid";
-    public const string CustomerIdInvalidMessage = "Customer id cannot be empty.";
-
     public const string StatusInvalidCode = "Orders.StatusInvalid";
     public const string StatusInvalidMessage = "Order status is invalid.";
 

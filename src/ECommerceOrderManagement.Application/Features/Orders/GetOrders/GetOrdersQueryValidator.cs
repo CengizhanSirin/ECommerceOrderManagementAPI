@@ -38,11 +38,6 @@ public sealed class GetOrdersQueryValidator : AbstractValidator<GetOrdersQuery>
             .WithMessage(OrderValidationErrors.SearchTermTooLongMessage)
             .When(query => !string.IsNullOrWhiteSpace(query.SearchTerm));
 
-        RuleFor(query => query.CustomerId)
-            .Must(customerId => !customerId.HasValue || customerId.Value != Guid.Empty)
-            .WithErrorCode(OrderValidationErrors.CustomerIdInvalidCode)
-            .WithMessage(OrderValidationErrors.CustomerIdInvalidMessage);
-
         RuleFor(query => query.Status)
             .Must(status => !status.HasValue || Enum.IsDefined(status.Value))
             .WithErrorCode(OrderValidationErrors.StatusInvalidCode)

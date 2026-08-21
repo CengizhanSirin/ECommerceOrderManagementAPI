@@ -9,5 +9,5 @@ public interface IOrderQueries
 {
     Task<GetOrderByIdResponse?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default);
 
-    Task<PagedResult<GetOrdersItemResponse>> GetPagedAsync(GetOrdersQuery query, CancellationToken cancellationToken = default);
+    Task<PagedResult<GetOrdersItemResponse>> GetPagedAsync(GetOrdersQuery query, Guid customerId, CancellationToken cancellationToken = default);
 }

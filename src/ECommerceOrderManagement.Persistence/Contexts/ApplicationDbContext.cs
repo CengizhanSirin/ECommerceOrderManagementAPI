@@ -2,6 +2,7 @@
 using ECommerceOrderManagement.Domain.Catalog;
 using ECommerceOrderManagement.Domain.Inventory;
 using ECommerceOrderManagement.Domain.Orders;
+using ECommerceOrderManagement.Domain.Payments;
 using ECommerceOrderManagement.Domain.ShoppingCarts;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,7 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<UserAddressPreference> UserAddressPreferences => Set<UserAddressPreference>();
     public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
     public DbSet<ShoppingCartItem> ShoppingCartItems => Set<ShoppingCartItem>();
+    public DbSet<Payment> Payments => Set<Payment>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
