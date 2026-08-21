@@ -10,8 +10,6 @@ public sealed class GetOrdersRequest
 
     public string? SearchTerm { get; init; }
 
-    public Guid? CustomerId { get; init; }
-
     public OrderStatus? Status { get; init; }
 
     public string? SortBy { get; init; } = "createdAtUtc";

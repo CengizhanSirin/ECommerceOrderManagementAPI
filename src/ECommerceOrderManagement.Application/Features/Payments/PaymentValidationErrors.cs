@@ -6,10 +6,6 @@ public static class PaymentValidationErrors
 
     public const string OrderIdRequiredMessage = "Order ID is required.";
 
-    public const string AmountGreaterThanZeroCode = "Payment.Amount.GreaterThanZero";
-
-    public const string AmountGreaterThanZeroMessage = "Payment amount must be greater than zero.";
-
     public const string CardHolderNameRequiredCode = "Payment.CardHolderName.Required";
 
     public const string CardHolderNameRequiredMessage = "Card holder name is required.";

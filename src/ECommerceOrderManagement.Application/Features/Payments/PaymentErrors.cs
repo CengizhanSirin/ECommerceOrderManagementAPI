@@ -13,4 +13,9 @@ public static class PaymentErrors
     {
         return Error.Failure("Payment.Failed", reason);
     }
+
+    public static Error OrderNotPayable(Guid orderId)
+    {
+        return Error.Conflict("Payment.OrderNotPayable", $"Order with ID '{orderId}' is not in a payable status.");
+    }
 }

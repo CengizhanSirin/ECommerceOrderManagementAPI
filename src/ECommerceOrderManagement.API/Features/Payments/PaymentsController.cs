@@ -20,7 +20,7 @@ public sealed class PaymentsController(ISender sender) : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentRequest request, CancellationToken cancellationToken)
     {
-        var command = new ProcessPaymentCommand(request.OrderId, request.Amount, request.CardHolderName, request.CardNumber, request.ExpireMonth,
+        var command = new ProcessPaymentCommand(request.OrderId, request.CardHolderName, request.CardNumber, request.ExpireMonth,
             request.ExpireYear, request.Cvc);
 
         var result = await sender.Send(command, cancellationToken);

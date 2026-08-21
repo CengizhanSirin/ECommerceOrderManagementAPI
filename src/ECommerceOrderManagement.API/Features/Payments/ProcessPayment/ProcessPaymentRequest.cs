@@ -2,7 +2,6 @@
 
 public sealed record ProcessPaymentRequest(
     Guid OrderId,
-    decimal Amount,
     string CardHolderName,
     string CardNumber,
     string ExpireMonth,

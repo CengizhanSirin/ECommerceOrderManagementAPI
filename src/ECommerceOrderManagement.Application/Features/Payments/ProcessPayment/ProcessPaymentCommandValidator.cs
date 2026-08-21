@@ -11,11 +11,6 @@ public sealed class ProcessPaymentCommandValidator : AbstractValidator<ProcessPa
             .WithErrorCode(PaymentValidationErrors.OrderIdRequiredCode)
             .WithMessage(PaymentValidationErrors.OrderIdRequiredMessage);
 
-        RuleFor(command => command.Amount)
-            .GreaterThan(0)
-            .WithErrorCode(PaymentValidationErrors.AmountGreaterThanZeroCode)
-            .WithMessage(PaymentValidationErrors.AmountGreaterThanZeroMessage);
-
         RuleFor(command => command.CardHolderName)
             .NotEmpty()
             .WithErrorCode(PaymentValidationErrors.CardHolderNameRequiredCode)

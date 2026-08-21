@@ -1,5 +1,4 @@
 ﻿using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
-using Iyzipay;
 using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.Extensions.Options;
@@ -26,6 +25,14 @@ internal sealed class IyzicoPaymentService(IOptions<IyzicoOptions> iyzicoOptions
 
         var amount = request.Amount.ToString("0.00", CultureInfo.InvariantCulture);
 
+        var nameParts = request.ShippingAddress.FullName.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+        var buyerName = nameParts[0];
+
+        var buyerSurname = nameParts.Length > 1
+            ? nameParts[1]
+            : nameParts[0];
+
         var iyzicoRequest = new CreatePaymentRequest
         {
             Locale = Locale.TR.ToString(),
@@ -50,48 +57,46 @@ internal sealed class IyzicoPaymentService(IOptions<IyzicoOptions> iyzicoOptions
 
             Buyer = new Buyer
             {
-                Id = request.OrderId.ToString(),
-                Name = "Test",
-                Surname = "Customer",
-                GsmNumber = "+905350000000",
+                Id = request.CustomerId.ToString(),
+                Name = buyerName,
+                Surname = buyerSurname,
+                GsmNumber = request.ShippingAddress.PhoneNumber,
                 Email = "test@example.com",
                 IdentityNumber = "74300864791",
-                RegistrationAddress = "Istanbul",
+                RegistrationAddress = request.ShippingAddress.AddressLine,
                 Ip = "85.34.78.112",
-                City = "Istanbul",
-                Country = "Turkey",
-                ZipCode = "34732"
+                City = request.ShippingAddress.City,
+                Country = request.ShippingAddress.Country,
+                ZipCode = request.ShippingAddress.PostalCode
             },
 
             ShippingAddress = new Address
             {
-                ContactName = request.CardHolderName,
-                City = "Istanbul",
-                Country = "Turkey",
-                Description = "Sandbox test address",
-                ZipCode = "34732"
+                ContactName = request.ShippingAddress.FullName,
+                City = request.ShippingAddress.City,
+                Country = request.ShippingAddress.Country,
+                Description = $"{request.ShippingAddress.AddressLine}, {request.ShippingAddress.District}",
+                ZipCode = request.ShippingAddress.PostalCode
             },
 
             BillingAddress = new Address
             {
-                ContactName = request.CardHolderName,
-                City = "Istanbul",
-                Country = "Turkey",
-                Description = "Sandbox test address",
-                ZipCode = "34732"
+                ContactName = request.BillingAddress.FullName,
+                City = request.BillingAddress.City,
+                Country = request.BillingAddress.Country,
+                Description = $"{request.BillingAddress.AddressLine}, {request.BillingAddress.District}",
+                ZipCode = request.BillingAddress.PostalCode
             },
 
-            BasketItems =
-            [
-                new BasketItem
-                {
-                    Id = request.OrderId.ToString(),
-                    Name = "Test Product",
-                    Category1 = "ECommerce",
-                    ItemType = BasketItemType.PHYSICAL.ToString(),
-                    Price = amount
-                }
-            ]
+            BasketItems = request.Items.Select(item => new BasketItem
+            {
+                Id = item.ProductId.ToString(),
+                Name = item.ProductName,
+                Category1 = "ECommerce",
+                ItemType = BasketItemType.PHYSICAL.ToString(),
+                Price = item.LineTotal.ToString("0.00", CultureInfo.InvariantCulture)
+            })
+            .ToList()
         };
 
         var iyzicoPayment = await Iyzipay.Model.Payment.Create(iyzicoRequest, options);
