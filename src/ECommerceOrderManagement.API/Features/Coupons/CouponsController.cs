@@ -2,6 +2,7 @@
 using ECommerceOrderManagement.API.Features.Coupons.CreateCoupon;
 using ECommerceOrderManagement.Application.Common.Authorization;
 using ECommerceOrderManagement.Application.Features.Coupons.CreateCoupon;
+using ECommerceOrderManagement.Application.Features.Coupons.GetCouponById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,21 @@ public sealed class CouponsController(ISender sender) : BaseApiController
             response => $"/api/coupons/{response.Id}");
     }
 
+
+
+    [HttpGet("{couponId:guid}")]
+    [ProducesResponseType<GetCouponByIdResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetCouponById([FromRoute] Guid couponId, CancellationToken cancellationToken)
+    {
+        var query = new GetCouponByIdQuery(couponId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
+    }
 
 
 }

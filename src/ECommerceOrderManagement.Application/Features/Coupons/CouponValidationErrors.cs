@@ -2,6 +2,10 @@
 
 public static class CouponValidationErrors
 {
+
+    public const string CouponIdRequiredCode = "Coupon.Id.Required";
+    public const string CouponIdRequiredMessage = "Coupon ID is required.";
+
     public const string CodeRequiredCode = "Coupon.Code.Required";
     public const string CodeRequiredMessage = "Coupon code is required.";
 
