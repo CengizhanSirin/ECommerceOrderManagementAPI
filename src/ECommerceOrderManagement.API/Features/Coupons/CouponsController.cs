@@ -5,6 +5,7 @@ using ECommerceOrderManagement.Application.Common.Authorization;
 using ECommerceOrderManagement.Application.Common.Pagination;
 using ECommerceOrderManagement.Application.Features.Coupons.ActivateCoupon;
 using ECommerceOrderManagement.Application.Features.Coupons.CreateCoupon;
+using ECommerceOrderManagement.Application.Features.Coupons.DeactivateCoupon;
 using ECommerceOrderManagement.Application.Features.Coupons.GetCouponById;
 using ECommerceOrderManagement.Application.Features.Coupons.GetCoupons;
 using MediatR;
@@ -95,6 +96,23 @@ public sealed class CouponsController(ISender sender) : BaseApiController
     public async Task<IActionResult> ActivateCoupon([FromRoute] Guid couponId, CancellationToken cancellationToken)
     {
         var command = new ActivateCouponCommand(couponId);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return HandleNoContent(result);
+    }
+
+
+
+    [HttpPost("{couponId:guid}/deactivate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeactivateCoupon([FromRoute] Guid couponId, CancellationToken cancellationToken)
+    {
+        var command = new DeactivateCouponCommand(couponId);
 
         var result = await sender.Send(command, cancellationToken);
 
