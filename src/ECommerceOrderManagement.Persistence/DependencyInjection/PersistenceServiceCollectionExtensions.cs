@@ -4,6 +4,7 @@ using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands;
 using ECommerceOrderManagement.Application.Features.Catalog.Categories;
 using ECommerceOrderManagement.Application.Features.Catalog.Products;
+using ECommerceOrderManagement.Application.Features.Coupons;
 using ECommerceOrderManagement.Application.Features.Inventory;
 using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts;
@@ -13,6 +14,8 @@ using ECommerceOrderManagement.Persistence.Repositories.Addresses;
 using ECommerceOrderManagement.Persistence.Repositories.Addresses.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog.Queries;
+using ECommerceOrderManagement.Persistence.Repositories.Coupons;
+using ECommerceOrderManagement.Persistence.Repositories.Coupons.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Inventory;
 using ECommerceOrderManagement.Persistence.Repositories.Inventory.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Orders;
@@ -45,6 +48,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IUserAddressPreferenceRepository, UserAddressPreferenceRepository>();
         services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<ICouponRepository, CouponRepository>();
 
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();
@@ -53,6 +57,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IOrderQueries, OrderQueries>();
         services.AddScoped<IAddressQueries, AddressQueries>();
         services.AddScoped<IShoppingCartQueries, ShoppingCartQueries>();
+        services.AddScoped<ICouponQueries, CouponQueries>();
 
         services.AddScoped<IUnitOfWork, ECommerceOrderManagement.Persistence.UnitOfWork.UnitOfWork>();
 

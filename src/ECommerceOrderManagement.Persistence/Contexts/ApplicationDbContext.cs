@@ -1,5 +1,6 @@
 ﻿using ECommerceOrderManagement.Domain.Addresses;
 using ECommerceOrderManagement.Domain.Catalog;
+using ECommerceOrderManagement.Domain.Coupons;
 using ECommerceOrderManagement.Domain.Inventory;
 using ECommerceOrderManagement.Domain.Orders;
 using ECommerceOrderManagement.Domain.Payments;
@@ -26,6 +27,8 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
     public DbSet<ShoppingCartItem> ShoppingCartItems => Set<ShoppingCartItem>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<Coupon> Coupons => Set<Coupon>();
+    public DbSet<CouponUsage> CouponUsages => Set<CouponUsage>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -11,8 +11,25 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.ToTable("Orders", "orders",
             tableBuilder =>
             {
-                tableBuilder.HasCheckConstraint("CK_Orders_Status_Valid",
+                tableBuilder.HasCheckConstraint(
+                    "CK_Orders_Status_Valid",
                     "[Status] BETWEEN 1 AND 6");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_Orders_Subtotal_NonNegative",
+                    "[Subtotal] >= 0");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_Orders_DiscountAmount_NonNegative",
+                    "[DiscountAmount] >= 0");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_Orders_TotalAmount_NonNegative",
+                    "[TotalAmount] >= 0");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_Orders_DiscountAmount_NotGreaterThanSubtotal",
+                    "[DiscountAmount] <= [Subtotal]");
             });
 
 
@@ -28,9 +45,17 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.Property(order => order.CancellationReason).HasMaxLength(500);
 
-        builder.Ignore(order => order.Subtotal);
+        builder.Property(order => order.Subtotal).HasPrecision(18, 2).IsRequired();
 
-        builder.Ignore(order => order.TotalAmount);
+        builder.Property(order => order.DiscountAmount).HasPrecision(18, 2).IsRequired();
+
+        builder.Property(order => order.TotalAmount).HasPrecision(18, 2).IsRequired();
+
+        builder.Property(order => order.CouponCode).HasMaxLength(50);
+
+        builder.Property(order => order.DiscountType);
+
+        builder.Property(order => order.DiscountValue).HasPrecision(18, 2);
 
         ConfigureShippingAddress(builder);
 

@@ -1,4 +1,5 @@
 ﻿using ECommerceOrderManagement.Domain.Common;
+using ECommerceOrderManagement.Domain.Coupons;
 
 namespace ECommerceOrderManagement.Domain.Orders;
 
@@ -18,9 +19,17 @@ public sealed class Order : AggregateRoot
 
     public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
 
-    public decimal Subtotal => _items.Sum(item => item.LineTotal);
+    public string? CouponCode { get; private set; }
 
-    public decimal TotalAmount => Subtotal;
+    public DiscountType? DiscountType { get; private set; }
+
+    public decimal? DiscountValue { get; private set; }
+
+    public decimal DiscountAmount { get; private set; }
+
+    public decimal Subtotal { get; private set; }
+
+    public decimal TotalAmount { get; private set; }
 
     public string? CancellationReason { get; private set; }
 
@@ -82,6 +91,10 @@ public sealed class Order : AggregateRoot
             order._items.Add(orderItem);
         }
 
+        order.Subtotal = order._items.Sum(item => item.LineTotal);
+        order.DiscountAmount = 0m;
+        order.TotalAmount = order.Subtotal;
+
         return order;
     }
 
@@ -137,5 +150,36 @@ public sealed class Order : AggregateRoot
         {
             throw new InvalidOperationException(errorMessage);
         }
+    }
+
+    public void ApplyDiscount(string couponCode, DiscountType discountType, decimal discountValue, decimal discountAmount)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(couponCode);
+
+        if (CouponCode is not null)
+        {
+            throw new InvalidOperationException("An order can only have one coupon.");
+        }
+
+        if (discountValue <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(discountValue), "Discount value must be greater than zero.");
+        }
+
+        if (discountAmount <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(discountAmount), "Discount amount must be greater than zero.");
+        }
+
+        if (discountAmount > Subtotal)
+        {
+            throw new InvalidOperationException("Discount amount cannot exceed order subtotal.");
+        }
+
+        CouponCode = couponCode.Trim().ToUpperInvariant();
+        DiscountType = discountType;
+        DiscountValue = discountValue;
+        DiscountAmount = discountAmount;
+        TotalAmount = Subtotal - DiscountAmount;
     }
 }
