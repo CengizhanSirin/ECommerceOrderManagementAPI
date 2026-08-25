@@ -41,4 +41,19 @@ public static class CouponValidationErrors
 
     public const string UsageLimitPerUserExceededCode = "Coupon.UsageLimitPerUser.Exceeded";
     public const string UsageLimitPerUserExceededMessage = "Usage limit per user cannot exceed total usage limit.";
+
+    public const string PageNumberInvalidCode = "Coupon.PageNumber.Invalid";
+    public const string PageNumberInvalidMessage = "Page number must be greater than zero.";
+
+    public const string PageSizeInvalidCode = "Coupon.PageSize.Invalid";
+    public const string PageSizeInvalidMessage = "Page size must be between 1 and 100.";
+
+    public const string SearchTermMaxLengthCode = "Coupon.SearchTerm.MaxLength";
+    public const string SearchTermMaxLengthMessage = "Search term must not exceed 50 characters.";
+
+    public const string SortFieldInvalidCode = "Coupon.SortField.Invalid";
+    public const string SortFieldInvalidMessage = "Sort field is invalid.";
+
+    public const string SortDirectionInvalidCode = "Coupon.SortDirection.Invalid";
+    public const string SortDirectionInvalidMessage = "Sort direction must be 'asc' or 'desc'.";
 }

@@ -1,8 +1,11 @@
 ﻿using ECommerceOrderManagement.API.Common.Controllers;
 using ECommerceOrderManagement.API.Features.Coupons.CreateCoupon;
+using ECommerceOrderManagement.API.Features.Coupons.GetCoupons;
 using ECommerceOrderManagement.Application.Common.Authorization;
+using ECommerceOrderManagement.Application.Common.Pagination;
 using ECommerceOrderManagement.Application.Features.Coupons.CreateCoupon;
 using ECommerceOrderManagement.Application.Features.Coupons.GetCouponById;
+using ECommerceOrderManagement.Application.Features.Coupons.GetCoupons;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -58,4 +61,25 @@ public sealed class CouponsController(ISender sender) : BaseApiController
     }
 
 
+
+    [HttpGet]
+    [ProducesResponseType<PagedResult<GetCouponsItemResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetCoupons([FromQuery] GetCouponsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetCouponsQuery(
+            request.PageNumber,
+            request.PageSize,
+            request.SearchTerm,
+            request.DiscountType,
+            request.IsActive,
+            request.SortBy,
+            request.SortDirection);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return HandleResult(result);
+    }
 }
