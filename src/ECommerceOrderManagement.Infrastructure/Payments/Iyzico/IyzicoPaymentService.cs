@@ -23,7 +23,9 @@ internal sealed class IyzicoPaymentService(IOptions<IyzicoOptions> iyzicoOptions
             BaseUrl = _iyzicoOptions.BaseUrl
         };
 
-        var amount = request.Amount.ToString("0.00", CultureInfo.InvariantCulture);
+        var price = request.Items .Sum(item => item.LineTotal).ToString("0.00", CultureInfo.InvariantCulture);
+
+        var paidPrice = request.Amount .ToString("0.00", CultureInfo.InvariantCulture);
 
         var nameParts = request.ShippingAddress.FullName.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
 
@@ -37,8 +39,8 @@ internal sealed class IyzicoPaymentService(IOptions<IyzicoOptions> iyzicoOptions
         {
             Locale = Locale.TR.ToString(),
             ConversationId = request.OrderId.ToString(),
-            Price = amount,
-            PaidPrice = amount,
+            Price = price,
+            PaidPrice = paidPrice,
             Currency = Currency.TRY.ToString(),
             Installment = 1,
             BasketId = request.OrderId.ToString(),

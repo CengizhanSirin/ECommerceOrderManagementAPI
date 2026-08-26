@@ -4,16 +4,20 @@ using ECommerceOrderManagement.Application.Common.Messaging;
 using ECommerceOrderManagement.Application.Common.Results;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Catalog.Products;
+using ECommerceOrderManagement.Application.Features.Coupons;
 using ECommerceOrderManagement.Application.Features.Inventory;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts;
 using ECommerceOrderManagement.Domain.Addresses;
+using ECommerceOrderManagement.Domain.Coupons;
 using ECommerceOrderManagement.Domain.Orders;
+using System.Data;
 
 namespace ECommerceOrderManagement.Application.Features.Orders.CreateOrder;
 
 internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, IInventoryRepository inventoryRepository, IOrderRepository orderRepository,
     IOrderNumberGenerator orderNumberGenerator, IUnitOfWork unitOfWork, ICurrentUser currentUser,
-    IAddressRepository addressRepository, IShoppingCartRepository shoppingCartRepository)
+    IAddressRepository addressRepository, IShoppingCartRepository shoppingCartRepository,
+    ICouponQueries couponQueries, ICouponRepository couponRepository)
     : ICommandHandler<CreateOrderCommand, CreateOrderResponse>
 {
     public async Task<Result<CreateOrderResponse>> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
@@ -102,20 +106,145 @@ internal sealed class CreateOrderCommandHandler(IProductQueries productQueries, 
             billingAddress,
             itemSnapshots);
 
-        foreach (var cartItem in shoppingCart.Items)
-        {
-            var inventoryItem = inventoryItemsByProductId[cartItem.ProductId];
+        var couponTransactionStarted = false;
 
-            inventoryItem.ReserveStock(cartItem.Quantity, $"Reserved for order {orderNumber}.");
+        async Task RollbackCouponTransactionAsync()
+        {
+            await unitOfWork.RollbackTransactionAsync(cancellationToken);
+            couponTransactionStarted = false;
         }
 
-        await orderRepository.AddAsync(order, cancellationToken);
+        CouponEvaluationReadModel? coupon = null;
 
-        shoppingCart.Clear();
+        try
+        {
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (!string.IsNullOrWhiteSpace(command.CouponCode))
+            {
+                await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
-        return Result<CreateOrderResponse>.Success(new CreateOrderResponse(order.Id, order.OrderNumber));
+                couponTransactionStarted = true;
+
+                var normalizedCouponCode = command.CouponCode.Trim().ToUpperInvariant();
+
+                await couponRepository.AcquireUsageLockAsync( normalizedCouponCode, cancellationToken);
+
+                coupon = await couponQueries.GetForEvaluationAsync(normalizedCouponCode, currentUser.UserId, cancellationToken);
+
+                if (coupon is null)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.NotFoundByCode(normalizedCouponCode));
+                }
+
+                if (!coupon.IsActive)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.Inactive(normalizedCouponCode));
+                }
+
+                var utcNow = DateTime.UtcNow;
+
+                if (utcNow < coupon.StartsAtUtc)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.NotStarted(normalizedCouponCode));
+                }
+
+                if (utcNow >= coupon.EndsAtUtc)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.Expired(normalizedCouponCode));
+                }
+
+                if (order.Subtotal < coupon.MinimumOrderAmount)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.MinimumOrderAmountNotMet(normalizedCouponCode, coupon.MinimumOrderAmount));
+                }
+
+                if (coupon.TotalUsageCount >= coupon.UsageLimit)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.UsageLimitReached(normalizedCouponCode));
+                }
+
+                if (coupon.UserUsageCount >= coupon.UsageLimitPerUser)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.UserUsageLimitReached(normalizedCouponCode));
+                }
+
+                decimal discountAmount = coupon.DiscountType switch
+                {
+                    DiscountType.Percentage => decimal.Round(order.Subtotal * coupon.DiscountValue / 100m, 2, MidpointRounding.AwayFromZero),
+
+                    DiscountType.FixedAmount => coupon.DiscountValue,
+
+                    _ => throw new InvalidOperationException($"Unsupported discount type '{coupon.DiscountType}'.")
+                };
+
+                if (coupon.DiscountType == DiscountType.FixedAmount && discountAmount > order.Subtotal)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.DiscountExceedsSubtotal());
+                }
+
+                if (discountAmount >= order.Subtotal)
+                {
+                    await RollbackCouponTransactionAsync();
+
+                    return Result<CreateOrderResponse>.Failure(CouponErrors.DiscountWouldMakeOrderFree());
+                }
+
+                order.ApplyDiscount(coupon.Code, coupon.DiscountType, coupon.DiscountValue, discountAmount);
+
+                var couponUsage = CouponUsage.Create(coupon.Id, currentUser.UserId, order.Id);
+
+                await couponRepository.AddUsageAsync(couponUsage, cancellationToken);
+            }
+
+
+            foreach (var cartItem in shoppingCart.Items)
+            {
+                var inventoryItem = inventoryItemsByProductId[cartItem.ProductId];
+
+                inventoryItem.ReserveStock(cartItem.Quantity, $"Reserved for order {orderNumber}.");
+            }
+
+            await orderRepository.AddAsync(order, cancellationToken);
+
+            shoppingCart.Clear();
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            if (couponTransactionStarted)
+            {
+                await unitOfWork.CommitTransactionAsync(cancellationToken);
+
+                couponTransactionStarted = false;
+            }
+
+
+            return Result<CreateOrderResponse>.Success(new CreateOrderResponse(order.Id, order.OrderNumber));
+
+        }
+        catch (Exception)
+        {
+            if (couponTransactionStarted)
+            {
+                await RollbackCouponTransactionAsync();
+            }
+            throw;
+        }
     }
 
     private static OrderAddress CreateOrderAddress(Address address)

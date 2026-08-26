@@ -2,4 +2,4 @@
 
 namespace ECommerceOrderManagement.Application.Features.Orders.CreateOrder;
 
-public sealed record CreateOrderCommand(Guid ShippingAddressId, Guid BillingAddressId) : ICommand<CreateOrderResponse>;
+public sealed record CreateOrderCommand(Guid ShippingAddressId, Guid BillingAddressId, string? CouponCode) : ICommand<CreateOrderResponse>;

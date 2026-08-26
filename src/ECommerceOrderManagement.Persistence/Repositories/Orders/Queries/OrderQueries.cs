@@ -20,8 +20,12 @@ internal sealed class OrderQueries(ApplicationDbContext dbContext) : IOrderQueri
                 order.CustomerId,
                 order.OrderNumber,
                 order.Status,
-                order.Items.Sum(item => item.UnitPrice * item.Quantity),
-                order.Items.Sum(item => item.UnitPrice * item.Quantity),
+                order.Subtotal,
+                order.DiscountAmount,
+                order.TotalAmount,
+                order.CouponCode,
+                order.DiscountType,
+                order.DiscountValue,
                 order.CancellationReason,
                 new GetOrderByIdAddressResponse(
                           order.ShippingAddress.FullName,
@@ -57,7 +61,7 @@ internal sealed class OrderQueries(ApplicationDbContext dbContext) : IOrderQueri
 
     public async Task<PagedResult<GetOrdersItemResponse>> GetPagedAsync(GetOrdersQuery query, Guid customerId, CancellationToken cancellationToken = default)
     {
-        IQueryable<Order> ordersQuery = dbContext.Orders.AsNoTracking().Where(order => order.CustomerId == customerId); 
+        IQueryable<Order> ordersQuery = dbContext.Orders.AsNoTracking().Where(order => order.CustomerId == customerId);
 
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
@@ -85,7 +89,7 @@ internal sealed class OrderQueries(ApplicationDbContext dbContext) : IOrderQueri
                 order.OrderNumber,
                 order.Status,
                 order.Items.Count(),
-                order.Items.Sum(item => (decimal?)(item.UnitPrice * item.Quantity)) ?? 0m,
+                order.TotalAmount,
                 order.CreatedAtUtc,
                 order.UpdatedAtUtc))
             .ToListAsync(cancellationToken);
@@ -115,13 +119,9 @@ internal sealed class OrderQueries(ApplicationDbContext dbContext) : IOrderQueri
 
             ("itemcount", true) => query.OrderByDescending(order => order.Items.Count()),
 
-            ("totalamount", false) =>
-                query.OrderBy(order =>
-                    order.Items.Sum(item => (decimal?)(item.UnitPrice * item.Quantity)) ?? 0m),
+            ("totalamount", false) => query.OrderBy(order => order.TotalAmount),
 
-            ("totalamount", true) =>
-                query.OrderByDescending(order =>
-                    order.Items.Sum(item => (decimal?)(item.UnitPrice * item.Quantity)) ?? 0m),
+            ("totalamount", true) => query.OrderByDescending(order => order.TotalAmount),
 
             ("createdatutc", false) => query.OrderBy(order => order.CreatedAtUtc),
 
