@@ -24,8 +24,8 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
                     "[DiscountAmount] >= 0");
 
                 tableBuilder.HasCheckConstraint(
-                    "CK_Orders_TotalAmount_NonNegative",
-                    "[TotalAmount] >= 0");
+                    "CK_Orders_TotalAmount_Positive",
+                    "[TotalAmount] > 0");
 
                 tableBuilder.HasCheckConstraint(
                     "CK_Orders_DiscountAmount_NotGreaterThanSubtotal",
