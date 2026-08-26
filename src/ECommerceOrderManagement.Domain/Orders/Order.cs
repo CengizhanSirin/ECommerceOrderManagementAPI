@@ -171,9 +171,9 @@ public sealed class Order : AggregateRoot
             throw new ArgumentOutOfRangeException(nameof(discountAmount), "Discount amount must be greater than zero.");
         }
 
-        if (discountAmount > Subtotal)
+        if (discountAmount >= Subtotal)
         {
-            throw new InvalidOperationException("Discount amount cannot exceed order subtotal.");
+            throw new InvalidOperationException("Discount amount must be less than order subtotal.");
         }
 
         CouponCode = couponCode.Trim().ToUpperInvariant();

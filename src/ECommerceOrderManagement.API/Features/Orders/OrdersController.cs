@@ -31,7 +31,7 @@ public sealed class OrdersController(ISender sender) : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
     {
-        var command = new CreateOrderCommand(request.ShippingAddressId, request.BillingAddressId);
+        var command = new CreateOrderCommand(request.ShippingAddressId, request.BillingAddressId, request.CouponCode);
 
         var result = await sender.Send(command, cancellationToken);
 

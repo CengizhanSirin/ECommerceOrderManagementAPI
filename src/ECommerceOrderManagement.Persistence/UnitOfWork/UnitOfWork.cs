@@ -3,6 +3,7 @@ using ECommerceOrderManagement.Application.Common.Exceptions;
 using ECommerceOrderManagement.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 
 namespace ECommerceOrderManagement.Persistence.UnitOfWork;
 
@@ -25,6 +26,16 @@ internal sealed class UnitOfWork : IUnitOfWork, IAsyncDisposable
         }
 
         _currentTransaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+    {
+        if (_currentTransaction is not null)
+        {
+            throw new InvalidOperationException("An active database transaction already exists.");
+        }
+
+        _currentTransaction = await _dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
