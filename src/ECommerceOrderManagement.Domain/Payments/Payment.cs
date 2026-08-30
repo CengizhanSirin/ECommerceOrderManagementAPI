@@ -1,4 +1,5 @@
 ﻿using ECommerceOrderManagement.Domain.Common;
+using ECommerceOrderManagement.Domain.Payments.Events;
 
 namespace ECommerceOrderManagement.Domain.Payments;
 
@@ -61,6 +62,8 @@ public sealed class Payment : AggregateRoot
         Status = PaymentStatus.Succeeded;
         ProviderPaymentId = providerPaymentId.Trim();
         FailureReason = null;
+
+        RaiseDomainEvent(new PaymentSucceededDomainEvent(Id, OrderId, Amount));
     }
 
     public void MarkAsFailed(string failureReason)
