@@ -1,9 +1,11 @@
 ﻿using ECommerceOrderManagement.Application.Common.Abstractions.Authentication;
+using ECommerceOrderManagement.Application.Common.Abstractions.Email;
 using ECommerceOrderManagement.Application.Common.Abstractions.Identity;
 using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
 using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Infrastructure.Authentication;
 using ECommerceOrderManagement.Infrastructure.Contexts;
+using ECommerceOrderManagement.Infrastructure.Email;
 using ECommerceOrderManagement.Infrastructure.Identity;
 using ECommerceOrderManagement.Infrastructure.Orders;
 using ECommerceOrderManagement.Infrastructure.Payments.Iyzico;
@@ -103,6 +105,28 @@ public static class InfrastructureServiceCollectionExtensions
 
         services.Configure<IyzicoOptions>(configuration.GetSection(IyzicoOptions.SectionName));
 
+        services.AddOptions<EmailOptions>()
+            .Bind(configuration.GetSection(EmailOptions.SectionName))
+            .Validate(
+            options => !string.IsNullOrWhiteSpace(options.Host),
+                "Email Host is required.")
+            .Validate(
+                options => options.Port > 0,
+                "Email Port must be greater than zero.")
+            .Validate(
+                options => !string.IsNullOrWhiteSpace(options.Username),
+                "Email Username is required.")
+            .Validate(
+                options => !string.IsNullOrWhiteSpace(options.Password),
+                "Email Password is required.")
+            .Validate(
+                options => !string.IsNullOrWhiteSpace(options.FromEmail),
+                "Email FromEmail is required.")
+            .ValidateOnStart();
+
+
+
+
         services.AddSingleton<IOrderNumberGenerator, OrderNumberGenerator>();
         services.AddSingleton<TimeProvider>(TimeProvider.System);
         services.AddScoped<IIdentityService, IdentityService>();
@@ -111,6 +135,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddScoped<IPaymentService, IyzicoPaymentService>();
+        services.AddScoped<IEmailSender, MailKitEmailSender>();
 
         return services;
     }
