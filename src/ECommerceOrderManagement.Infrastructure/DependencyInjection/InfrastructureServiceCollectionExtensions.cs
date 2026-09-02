@@ -4,6 +4,7 @@ using ECommerceOrderManagement.Application.Common.Abstractions.Identity;
 using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
 using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Infrastructure.Authentication;
+using ECommerceOrderManagement.Infrastructure.BackgroundServices.Outbox;
 using ECommerceOrderManagement.Infrastructure.Contexts;
 using ECommerceOrderManagement.Infrastructure.Email;
 using ECommerceOrderManagement.Infrastructure.Identity;
@@ -124,8 +125,21 @@ public static class InfrastructureServiceCollectionExtensions
                 "Email FromEmail is required.")
             .ValidateOnStart();
 
+        services.AddOptions<OutboxProcessingOptions>()
+            .Bind(configuration.GetSection(OutboxProcessingOptions.SectionName))
+            .Validate(
+            options => options.PollingIntervalSeconds > 0,
+            "Outbox polling interval must be greater than zero.")
+            .Validate(
+            options => options.BatchSize > 0,
+            "Outbox batch size must be greater than zero.")
+            .Validate(
+            options => options.MaxRetryCount > 0,
+            "Outbox max retry count must be greater than zero.")
+            .ValidateOnStart();
 
 
+        services.AddHostedService<OutboxBackgroundService>();
 
         services.AddSingleton<IOrderNumberGenerator, OrderNumberGenerator>();
         services.AddSingleton<TimeProvider>(TimeProvider.System);
