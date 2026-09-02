@@ -1,4 +1,5 @@
-﻿using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
+﻿using ECommerceOrderManagement.Application.Common.Abstractions.Outbox;
+using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
 using ECommerceOrderManagement.Application.Common.Abstractions.Persistence;
 using ECommerceOrderManagement.Application.Features.Addresses;
 using ECommerceOrderManagement.Application.Features.Catalog.Brands;
@@ -10,6 +11,7 @@ using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Application.Features.ShoppingCarts;
 using ECommerceOrderManagement.Persistence.Contexts;
 using ECommerceOrderManagement.Persistence.Interceptors;
+using ECommerceOrderManagement.Persistence.Outbox;
 using ECommerceOrderManagement.Persistence.Repositories.Addresses;
 using ECommerceOrderManagement.Persistence.Repositories.Addresses.Queries;
 using ECommerceOrderManagement.Persistence.Repositories.Catalog;
@@ -49,6 +51,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<ICouponRepository, CouponRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
 
         services.AddScoped<IProductQueries, ProductQueries>();
         services.AddScoped<ICategoryQueries, CategoryQueries>();
@@ -58,6 +61,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IAddressQueries, AddressQueries>();
         services.AddScoped<IShoppingCartQueries, ShoppingCartQueries>();
         services.AddScoped<ICouponQueries, CouponQueries>();
+        services.AddScoped<IOutboxQueries, OutboxQueries>();
 
         services.AddScoped<IUnitOfWork, ECommerceOrderManagement.Persistence.UnitOfWork.UnitOfWork>();
 
