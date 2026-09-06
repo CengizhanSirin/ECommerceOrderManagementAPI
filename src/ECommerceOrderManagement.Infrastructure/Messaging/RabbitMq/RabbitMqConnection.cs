@@ -27,7 +27,7 @@ internal sealed class RabbitMqConnection : IAsyncDisposable
 
     public async Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
     {
-        if (_connection is not null && _connection.IsOpen)
+        if (_connection is not null)
         {
             return _connection;
         }
@@ -36,15 +36,11 @@ internal sealed class RabbitMqConnection : IAsyncDisposable
 
         try
         {
-            if (_connection is not null && _connection.IsOpen)
+            if (_connection is not null)
             {
                 return _connection;
             }
 
-            if (_connection is not null)
-            {
-                await _connection.DisposeAsync();
-            }
 
             _connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
 
