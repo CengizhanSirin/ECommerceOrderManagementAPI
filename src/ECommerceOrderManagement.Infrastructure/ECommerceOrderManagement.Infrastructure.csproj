@@ -15,6 +15,7 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Iyzipay" />
 		<PackageReference Include="MailKit" />
+		<PackageReference Include="RabbitMQ.Client" />
 
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
 
