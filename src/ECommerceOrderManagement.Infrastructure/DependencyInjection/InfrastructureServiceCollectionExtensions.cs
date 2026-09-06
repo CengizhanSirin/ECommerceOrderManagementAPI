@@ -1,6 +1,7 @@
 ﻿using ECommerceOrderManagement.Application.Common.Abstractions.Authentication;
 using ECommerceOrderManagement.Application.Common.Abstractions.Email;
 using ECommerceOrderManagement.Application.Common.Abstractions.Identity;
+using ECommerceOrderManagement.Application.Common.Abstractions.Messaging;
 using ECommerceOrderManagement.Application.Common.Abstractions.Payments;
 using ECommerceOrderManagement.Application.Features.Orders;
 using ECommerceOrderManagement.Infrastructure.Authentication;
@@ -8,6 +9,8 @@ using ECommerceOrderManagement.Infrastructure.BackgroundServices.Outbox;
 using ECommerceOrderManagement.Infrastructure.Contexts;
 using ECommerceOrderManagement.Infrastructure.Email;
 using ECommerceOrderManagement.Infrastructure.Identity;
+using ECommerceOrderManagement.Infrastructure.Messaging.RabbitMq;
+using ECommerceOrderManagement.Infrastructure.Messaging.RabbitMq.Consumers;
 using ECommerceOrderManagement.Infrastructure.Orders;
 using ECommerceOrderManagement.Infrastructure.Payments.Iyzico;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -137,6 +140,36 @@ public static class InfrastructureServiceCollectionExtensions
             options => options.MaxRetryCount > 0,
             "Outbox max retry count must be greater than zero.")
             .ValidateOnStart();
+
+        services.AddOptions<RabbitMqOptions>()
+            .Bind(configuration.GetSection(RabbitMqOptions.SectionName))
+            .Validate(
+            options => !string.IsNullOrWhiteSpace(options.HostName),
+                "RabbitMQ HostName is required.")
+
+            .Validate(options => options.Port > 0,
+                "RabbitMQ Port must be greater than zero.")
+
+            .Validate(options => !string.IsNullOrWhiteSpace(options.UserName),
+                "RabbitMQ UserName is required.")
+
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Password),
+                "RabbitMQ Password is required.")
+
+            .Validate(options => !string.IsNullOrWhiteSpace(options.ExchangeName),
+                "RabbitMQ ExchangeName is required.")
+
+            .Validate(options => !string.IsNullOrWhiteSpace(options.QueueName),
+                "RabbitMQ QueueName is required.")
+
+            .Validate(options => !string.IsNullOrWhiteSpace(options.RoutingKey),
+                "RabbitMQ RoutingKey is required.")
+            .ValidateOnStart();
+
+
+        services.AddSingleton<RabbitMqConnection>();
+        services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
+        services.AddHostedService<PaymentSucceededConsumer>();
 
 
         services.AddHostedService<OutboxBackgroundService>();
