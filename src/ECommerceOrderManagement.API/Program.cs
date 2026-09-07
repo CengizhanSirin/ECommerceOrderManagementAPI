@@ -20,6 +20,12 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
 
+if (builder.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
+{
+    await app.Services.ApplyPersistenceMigrationsAsync();
+    await app.Services.ApplyIdentityMigrationsAsync();
+}
+
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
