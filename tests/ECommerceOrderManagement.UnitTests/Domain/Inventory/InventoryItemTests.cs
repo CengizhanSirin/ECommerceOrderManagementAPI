@@ -201,7 +201,25 @@ public sealed class InventoryItemTests
         Assert.Equal(0, releaseMovement.ReservedQuantityAfter);
     }
 
+    [Fact]
+    public void DecreaseStock_ShouldThrowInvalidOperationException_WhenQuantityExceedsAvailableStock()
+    {
+        // Arrange
+        var inventoryItem = InventoryItem.Create(
+            productId: Guid.NewGuid(),
+            initialQuantity: 10,
+            reorderLevel: 2);
 
+        inventoryItem.ReserveStock(6);
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => inventoryItem.DecreaseStock(5));
+
+        Assert.Equal(10, inventoryItem.QuantityOnHand);
+        Assert.Equal(6, inventoryItem.ReservedQuantity);
+
+        Assert.Single(inventoryItem.StockMovements);
+    }
 
 
 }
