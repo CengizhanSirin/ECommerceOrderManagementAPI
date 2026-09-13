@@ -91,4 +91,117 @@ public sealed class InventoryItemTests
         Assert.Equal(2, inventoryItem.StockMovements.Count);
     }
 
+    [Fact]
+    public void ReleaseStock_ShouldReleaseQuantity_WhenReservedStockIsSufficient()
+    {
+        // Arrange
+        var inventoryItem = InventoryItem.Create(
+            productId: Guid.NewGuid(),
+            initialQuantity: 10,
+            reorderLevel: 2);
+
+        inventoryItem.ReserveStock(6);
+
+        // Act
+        inventoryItem.ReleaseStock(2);
+
+        // Assert
+        Assert.Equal(10, inventoryItem.QuantityOnHand);
+        Assert.Equal(4, inventoryItem.ReservedQuantity);
+        Assert.Equal(6, inventoryItem.AvailableQuantity);
+
+        Assert.Equal(2, inventoryItem.StockMovements.Count);
+
+        var releaseMovement = Assert.Single(
+            inventoryItem.StockMovements,
+            movement => movement.Type == StockMovementType.Release);
+
+        Assert.Equal(2, releaseMovement.Quantity);
+        Assert.Equal(6, releaseMovement.ReservedQuantityBefore);
+        Assert.Equal(4, releaseMovement.ReservedQuantityAfter);
+    }
+
+    [Fact]
+    public void ReleaseStock_ShouldThrowInvalidOperationException_WhenQuantityExceedsReservedStock()
+    {
+        // Arrange
+        var inventoryItem = InventoryItem.Create(
+            productId: Guid.NewGuid(),
+            initialQuantity: 10,
+            reorderLevel: 2);
+
+        inventoryItem.ReserveStock(4);
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => inventoryItem.ReleaseStock(5));
+
+        Assert.Equal(10, inventoryItem.QuantityOnHand);
+        Assert.Equal(4, inventoryItem.ReservedQuantity);
+        Assert.Equal(6, inventoryItem.AvailableQuantity);
+
+        var stockMovement = Assert.Single(inventoryItem.StockMovements);
+
+        Assert.Equal(StockMovementType.Reserve, stockMovement.Type);
+        Assert.Equal(4, stockMovement.Quantity);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void ReleaseStock_ShouldThrowArgumentOutOfRangeException_WhenQuantityIsNotPositive(int quantity)
+    {
+        // Arrange
+        var inventoryItem = InventoryItem.Create(
+            productId: Guid.NewGuid(),
+            initialQuantity: 10,
+            reorderLevel: 2);
+
+        inventoryItem.ReserveStock(4);
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => inventoryItem.ReleaseStock(quantity));
+
+        Assert.Equal(10, inventoryItem.QuantityOnHand);
+        Assert.Equal(4, inventoryItem.ReservedQuantity);
+        Assert.Equal(6, inventoryItem.AvailableQuantity);
+
+        var stockMovement = Assert.Single(inventoryItem.StockMovements);
+
+        Assert.Equal(StockMovementType.Reserve, stockMovement.Type);
+        Assert.Equal(4, stockMovement.Quantity);
+    }
+
+    [Fact]
+    public void ReleaseStock_ShouldReleaseAllReservedStock_WhenQuantityEqualsReservedStock()
+    {
+        // Arrange
+        var inventoryItem = InventoryItem.Create(
+            productId: Guid.NewGuid(),
+            initialQuantity: 10,
+            reorderLevel: 2);
+
+        inventoryItem.ReserveStock(4);
+
+        // Act
+        inventoryItem.ReleaseStock(4);
+
+        // Assert
+        Assert.Equal(10, inventoryItem.QuantityOnHand);
+        Assert.Equal(0, inventoryItem.ReservedQuantity);
+        Assert.Equal(10, inventoryItem.AvailableQuantity);
+
+        Assert.Equal(2, inventoryItem.StockMovements.Count);
+
+        var releaseMovement = Assert.Single(
+            inventoryItem.StockMovements,
+            movement => movement.Type == StockMovementType.Release);
+
+        Assert.Equal(4, releaseMovement.Quantity);
+        Assert.Equal(4, releaseMovement.ReservedQuantityBefore);
+        Assert.Equal(0, releaseMovement.ReservedQuantityAfter);
+    }
+
+
+
+
 }
