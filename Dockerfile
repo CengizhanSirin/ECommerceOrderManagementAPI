@@ -11,6 +11,7 @@ COPY src/ECommerceOrderManagement.Domain/ECommerceOrderManagement.Domain.csproj 
 COPY src/ECommerceOrderManagement.Infrastructure/ECommerceOrderManagement.Infrastructure.csproj src/ECommerceOrderManagement.Infrastructure/
 COPY src/ECommerceOrderManagement.Persistence/ECommerceOrderManagement.Persistence.csproj src/ECommerceOrderManagement.Persistence/
 COPY tests/ECommerceOrderManagement.IntegrationTests/ECommerceOrderManagement.IntegrationTests.csproj tests/ECommerceOrderManagement.IntegrationTests/
+COPY tests/ECommerceOrderManagement.UnitTests/ECommerceOrderManagement.UnitTests.csproj tests/ECommerceOrderManagement.UnitTests/
 
 RUN dotnet restore ECommerceOrderManagementAPI.slnx
 

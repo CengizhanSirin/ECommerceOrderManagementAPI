@@ -25,5 +25,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/ECommerceOrderManagement.IntegrationTests/ECommerceOrderManagement.IntegrationTests.csproj" />
+    <Project Path="tests/ECommerceOrderManagement.UnitTests/ECommerceOrderManagement.UnitTests.csproj" Id="9aae5be4-07d5-425e-8bc3-ba62bdee82ca" />
   </Folder>
 </Solution>
