@@ -6,6 +6,11 @@
     <File Path="Directory.Packages.props" />
     <File Path="docker-compose.yml" />
     <File Path="Dockerfile" />
+    <File Path="docs/images/swagger-auth-catalog.png" />
+    <File Path="docs/images/swagger-orders-payments.png" />
+    <File Path="docs/images/swagger-products-cart.png" />
+    <File Path="docs/images/unit-tests.png" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/API/">
